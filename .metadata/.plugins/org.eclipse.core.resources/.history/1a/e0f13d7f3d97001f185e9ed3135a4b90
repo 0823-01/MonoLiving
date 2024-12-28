@@ -1,0 +1,48 @@
+package com.kh.order.model.service;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import com.kh.order.model.vo.Order;
+import com.kh.common.JDBCTemplate; // JDBC 템플릿 예시
+
+public class OrderService {
+    public ArrayList<Order> getAllOrders() {
+        ArrayList<Order> orderList = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        String query = "SELECT ORDER_NO, TOTAL_PRICE, RECIPIENT, ADDRESS, PHONE, STATUS, RES_REQUIREMENT, " +
+                       "PAY_CODE, ORDER_ENFORLL, REFUND_DATE, USER_ID FROM ORDERS";
+
+        try {
+            conn = JDBCTemplate.getConnection();
+            pstmt = conn.prepareStatement(query);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setOrderNo(rs.getInt("ORDER_NO"));
+                order.setTotalPrice(rs.getInt("TOTAL_PRICE"));
+                order.setRecipient(rs.getString("RECIPIENT"));
+                order.setAddress(rs.getString("ADDRESS"));
+                order.setPhone(rs.getString("PHONE"));
+                order.setStatus(rs.getInt("STATUS"));
+                order.setResRequirement(rs.getString("RES_REQUIREMENT"));
+                order.setPayCode(rs.getString("PAY_CODE"));
+                order.setOrderEnroll(rs.getDate("ORDER_ENFORLL"));
+                order.setRefundDate(rs.getDate("REFUND_DATE"));
+                order.setUserId(rs.getString("USER_ID"));
+                
+                orderList.add(order);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            JDBCTemplate.close(rs, pstmt, conn);
+        }
+        return orderList;
+    }
+}

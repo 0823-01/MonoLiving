@@ -1,0 +1,62 @@
+package com.kh.member.model.dao;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Properties;
+
+import com.kh.member.model.vo.heartProduct;
+
+public class WishlistDao {
+	
+	 private Properties prop = new Properties();
+
+	    public WishlistDao() {
+	        // member-mapper.xml 파일로부터 query문들을 key + value 세트로 읽어서 담아둘 것 
+	        String path = "/sql/member/wishlist-mapper.xml";
+	        String fileName = MemberDao.class.getResource(path).getPath();
+	        try {
+	            prop.loadFromXML(new FileInputStream(fileName));
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	
+
+	/**
+	 * 찜상품 추가 쿼리문 실행 메소드
+	 * @param conn
+	 * @param wishlist
+	 * @return
+	 */
+	public int insertWishlist(Connection conn, heartProduct wishlist) {
+		
+		int result = 0;
+		PreparedStatement pstmt = null;
+		
+		String sql = prop.getProperty("insertWishlist");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}  // insertWishlist 메소드 영역 끝
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}

@@ -1,0 +1,20 @@
+// Order.java
+package com.kh.order.model.vo;
+
+import java.util.Date;
+
+public class Order {
+    private int orderNo;            // 주문 ID
+    private int totalPrice;         // 주문 상품 전체 금액
+    private String recipient;        // 수령인
+    private String address;          // 주소
+    private String phone;            // 전화번호
+    private String status;           // 배송 상태
+    private String resRequirement;   // 요청 사항
+    private String payCode;          // 결제 코드
+    private Date orderEnroll;        // 주문 날짜
+    private Date refundDate;         // 환불 날짜
+    private int userId;              // 주문한 회원 번호
+
+    // 생성자, getter, setter 생략
+}

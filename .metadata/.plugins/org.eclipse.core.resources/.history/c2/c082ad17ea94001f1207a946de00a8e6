@@ -1,0 +1,57 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" import="com.kh.member.model.vo.Member" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아이디찾기</title>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#findIdButton').on('click', function(e) {
+                e.preventDefault(); 
+                
+                var userName = $('#userName').val();
+                var email = $('#email').val();
+
+                $.ajax({
+                    url: '<%= request.getContextPath() %>/IdReset.id',
+                    type: 'GET',
+                    data: {
+                        userName: userName,
+                        email: email
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            // 아이디 찾기 결과 화면으로 이동하여 결과 표시
+                            window.location.href = '<%= request.getContextPath() %>/views/member/findIdResult.jsp?message=' + encodeURIComponent(response.message);
+                        } else {	
+                            alert("입력한 정보에 일치하는 아이디가 없습니다"); 
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX 요청 실패:', error);
+                    }
+                });
+            });
+        });
+    </script>
+    
+    <style>
+        /* 스타일 생략 */
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>아이디 찾기</h1>
+    <form id="findIdForm"> 
+        <label for="userName">이름:</label>
+        <input type="text" id="userName" name="userName" required><br>
+        <label for="email">이메일:</label>
+        <input type="email" id="email" name="email" required><br>
+        <button id="findIdButton">아이디 찾기</button>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+package com.kh.order.model.dao;
+
+public class OrderDao {
+	public boolean updateOrderStatus(Connection conn, int orderId, int status) {
+	    PreparedStatement pstmt = null;
+	    String query = "UPDATE orders SET status = ? WHERE order_id = ?";
+	    try {
+	        pstmt = conn.prepareStatement(query);
+	        pstmt.setInt(1, status);
+	        pstmt.setInt(2, orderId);
+	        return pstmt.executeUpdate() > 0;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    } finally {
+	        close(pstmt);
+	    }
+	}
+
+}

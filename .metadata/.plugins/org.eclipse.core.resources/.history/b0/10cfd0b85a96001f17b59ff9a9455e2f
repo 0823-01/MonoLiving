@@ -1,0 +1,169 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" import="com.kh.member.model.vo.Member" %>
+
+<%
+    // session으로부터 응답데이터인 로그인한 회원의 정보 (loginUser)
+    Member loginUser = (Member)session.getAttribute("loginUser");
+
+    // request.getContextPath()를 통해 context path 값 알아내기
+    String contextPath = request.getContextPath();
+
+    // session으로부터 alertMsg 값을 뽑아내기
+    String alertMsg = (String)session.getAttribute("alertMsg");
+
+    // 쿠키 불러오기
+    Cookie[] cookies = request.getCookies();
+    String saveId = ""; // 아이디값을 저장할 변수
+
+    if(cookies != null) {
+        for(int i = 0; i < cookies.length; i++) {
+            if(cookies[i].getName().equals("saveId")) {
+                saveId = cookies[i].getValue();
+                break;
+            }
+        }
+    }
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <link rel="stylesheet" href="resources/css/main.css">
+    
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+    <!-- jQuery 온라인 방식 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    
+    <!-- Popper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    
+    <!-- Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+    <script>
+        $(function() {
+            // 1회성 alert 문구 띄우기
+            let msg = "<%= alertMsg %>";
+            if(msg != "null") {
+                alert(msg);
+                <% session.removeAttribute("alertMsg"); %>
+            }
+        });
+
+        function handleProfileClick() {
+            <% if (loginUser == null) { %>
+                openLoginPanel();
+            <% } else { %>
+                location.href = '<%= contextPath %>/myPage.me';
+            <% } %>
+        }
+    </script>
+    
+    <button class="chatbot-button" onclick="openChat()">
+        상담하기
+    </button>
+    <div class="menu-panel">
+        <span class="close-menu-btn">&times;</span>
+        <h2>Mono'Shop</h2>
+        <ul>
+            <li><a href="#" onclick="location.href = '<%= contextPath %>/product.pr'; return false;">전체 상품 목록</a></li>
+            <li><a href="#" data-target="submenu">카테고리별 상품 목록</a></li>
+            <li><a href="#" onclick="location.href = '<%= contextPath %>/list.no'; return false;">공지사항</a></li>
+        </ul>
+        <div class="submenu-panel" id="submenu">
+            <div>
+                <li><a href="#" onclick="location.href = '<%= contextPath %>/bedList.pr'; return false;">침대</a></li>
+                <li><a href="#" onclick="location.href = '<%= contextPath %>/tableList.pr'; return false;">테이블·식탁·책상</a></li>
+                <li><a href="#" onclick="location.href = '<%= contextPath %>/cabinetList.pr'; return false;">서랍·수납장</a></li>
+                <li><a href="#" onclick="location.href = '<%= contextPath %>/showcaseList.pr'; return false;">진열장·책장</a></li>
+                <li><a href="#" onclick="location.href = '<%= contextPath %>/chairList.pr'; return false;">의자</a></li>
+                <li><a href="#" onclick="location.href = '<%= contextPath %>/closetList.pr'; return false;">행거·옷장</a></li>
+            </div>
+        </div>
+    </div>
+
+    <div class="search-panel">
+        <input type="text" class="search-input" placeholder="'당신만의 공간을 위한' 가구를 검색하세요."/>
+        <span class="close-search-btn">&times;</span>
+    </div>
+
+    <div class="overlay"></div>
+    
+    <!-- 로그인 관련 영역 -->
+    <div class="login-area">
+        <div class="login-panel">
+            <span class="close-btn" style="margin-left: 600px;">&times;</span>
+            <h2 style="margin-right: 450px; margin-bottom: 50px;">로그인</h2>
+            <p class="welcome-message" style="margin-right: 390px;">안녕하세요 고객님</p>
+            <div class="or-divider"></div>
+
+            <form id="login-form" action="<%= contextPath %>/login.me" method="post">
+                <p style="margin-left: 350px;">*는 필수입력 사항입니다.</p>
+                <p style="margin-right: 530px; margin-top: 40px;">ID*</p>
+                <input type="text" name="userId" required>
+                <a href="<%= contextPath %>/IdReset.id" class="password-reset">아이디 잊어버리셨습니까?</a>
+
+                <p style="margin-right: 460px; margin-top: 25px;">PASSWORD*</p>
+                <input type="password" name="userPwd" required>
+
+                <a href="<%= contextPath %>/pwReset.pw" class="password-reset">비밀번호를 잊어버리셨습니까?</a>
+                <button type="submit" class="login-button">로그인</button>
+                <button type="button" onclick="enrollPage();" class="login-button">회원가입</button>
+            </form>
+        </div>
+
+        <div class="wrap">
+            <!-- Header -->
+            <div id="header">
+                <div id="header1">
+                    <img src="resources/images/main/menu.png" alt="Menu">
+                </div>
+                <div id="header2">
+                	<a  href="<%= contextPath %>/">MONO</a>
+                </div>
+                <div id="header3">
+                    <img src="resources/images/main/search.png" alt="Search" onclick="openSearchPanel()">
+                    <img src="resources/images/main/heart.png" alt="Wishlist">
+                    
+                    <!-- 프로필 아이콘: 로그인 상태에 따라 다른 동작 -->
+                    <img src="resources/images/main/icon.png" alt="Profile" onclick="handleProfileClick()">
+
+                    <img src="resources/images/main/bag.png" alt="Cart">
+                </div>
+            </div>
+        </div>
+
+        <script src="resources/js/login.js"></script>
+
+        <script>
+            function enrollPage() {
+                location.href = "<%= contextPath %>/enrollForm.me";
+            }
+        </script>
+
+        <!-- 사용자 정보 표시: 로그인 상태에 따라 다른 내용 표시 -->
+        <div id="user-info">
+            <%
+                if (loginUser != null) {
+            %>
+                <b><%= loginUser.getUserName() %>님</b> 환영합니다. <br><br>
+                <div align="center">
+                    <a href="<%= contextPath %>/myPage.me">마이페이지</a>
+                    <a href="<%= contextPath %>/logout.me">로그아웃</a>
+                </div>
+            <%
+                } else {
+            %>
+                <p>로그인 후 개인 정보를 확인하세요.</p>
+            <%
+                }
+            %>
+        </div>
+    </div>
+</body>
+</html>

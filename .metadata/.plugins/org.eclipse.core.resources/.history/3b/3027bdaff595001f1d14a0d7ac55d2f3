@@ -1,0 +1,44 @@
+// OrderDao.java
+package com.kh.order.model.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import com.kh.order.model.vo.Order;
+import static com.kh.common.JDBCTemplate.*;
+
+public class OrderDao {
+    public int insertOrder(Order order) {
+        Connection conn = getConnection();
+        PreparedStatement pstmt = null;
+        int result = 0;
+
+        String sql = "INSERT INTO orders (total_price, recipient, address, phone, status, res_requirement, pay_code, order_enroll, user_id) "
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?, SYSDATE, ?)";
+
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, order.getTotalPrice());
+            pstmt.setString(2, order.getRecipient());
+            pstmt.setString(3, order.getAddress());
+            pstmt.setString(4, order.getPhone());
+            pstmt.setString(5, order.getStatus());
+            pstmt.setString(6, order.getResRequirement());
+            pstmt.setString(7, order.getPayCode());
+            pstmt.setInt(8, order.getUserId());
+
+            result = pstmt.executeUpdate();
+            if (result > 0) {
+                commit(conn);
+            } else {
+                rollback(conn);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(pstmt);
+            close(conn);
+        }
+        return result;
+    }
+}

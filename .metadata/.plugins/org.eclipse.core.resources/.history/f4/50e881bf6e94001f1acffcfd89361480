@@ -1,0 +1,104 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background: #333;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+main {
+    padding: 20px;
+}
+
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.product {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+}
+
+.product img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+footer {
+    text-align: center;
+    padding: 10px 0;
+    background: #333;
+    color: #fff;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+</style>
+</head>
+<body>
+		<%@ include file="../common/header.jsp" %>
+
+       <div id="content_3">
+			  <div id="bar">
+			    <div id="box">
+			      <ul id="item-count">
+			        <li>총 67개</li>
+			      </ul>
+			      <ul id="sorting-options">
+			        <li>추천순</li>
+			        <li>낮은가격순</li>
+			        <li>높은가격순</li>
+			      </ul>
+			    </div>
+			  </div>
+</body>
+</html>

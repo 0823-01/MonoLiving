@@ -1,0 +1,36 @@
+package com.kh.order.controller;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import com.kh.order.model.service.OrderService;
+
+@WebServlet("/updateOrderStatus.me")
+public class UpdateOrderStatus extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        int orderId = Integer.parseInt(request.getParameter("orderId"));
+        int status = Integer.parseInt(request.getParameter("status"));
+
+        OrderService orderService = new OrderService();
+
+        try {
+            // 배송 상태 업데이트
+            boolean isUpdated = orderService.updateOrderStatus(orderId, status);
+
+            if (isUpdated) {
+                // 상태 업데이트 성공 시 주문 관리 페이지로 리디렉트
+                response.sendRedirect(request.getContextPath() + "/OrderMange.jsp");
+            } else {
+                // 실패 시 400 에러와 함께 실패 메시지 출력
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "업데이트 실패");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "서버 오류");
+        }
+    }
+}

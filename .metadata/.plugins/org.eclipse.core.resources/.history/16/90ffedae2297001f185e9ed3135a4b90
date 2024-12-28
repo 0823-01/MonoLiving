@@ -1,0 +1,66 @@
+package com.kh.order.model.vo;
+
+public class Order {
+    private int orderNo;                 // 주문 아이디
+    private int totalPrice;               // 주문 상품 전체 금액
+    private String recipient;             // 수령인
+    private String address;               // 주소
+    private String phone;                 // 주문 회원 전화번호
+    private int status;                   // 배송 상태 (1: 배송중, 2: 배송완료)
+    private String resRequirement;        // 요청사항
+    private String payCode;               // 결제 코드
+    private Date orderEnroll;             // 주문 날짜
+    private Date refundDate;              // 환불 날짜
+    private String userId;           
+    
+    public Order() {
+  
+    }
+	public int getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
+	}
+	public String getCustomerName() {
+		return customerName;
+	}
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+	public String getProductName() {
+		return productName;
+	}
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+	public int getPrice() {
+		return price;
+	}
+	public void setPrice(int price) {
+		this.price = price;
+	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	public Order(int orderId, String customerName, String productName, int price, int status) {
+		super();
+		this.orderId = orderId;
+		this.customerName = customerName;
+		this.productName = productName;
+		this.price = price;
+		this.status = status;
+	}
+	@Override
+	public String toString() {
+		return "Order [orderId=" + orderId + ", customerName=" + customerName + ", productName=" + productName
+				+ ", price=" + price + ", status=" + status + "]";
+	}
+
+ 
+    
+    
+}

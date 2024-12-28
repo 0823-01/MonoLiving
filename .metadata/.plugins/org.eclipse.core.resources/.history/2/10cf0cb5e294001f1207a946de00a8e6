@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>카카오맵 - 도로명 주소 검색</title>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=dc02060907b4ccb8c6417c5af8b8a228&libraries=services"></script>
+    <style>
+        .wrap {
+            width: 600px;
+            margin: auto;
+        }
+        #map {
+            width: 100%;
+            height: 300px;
+            margin-bottom: 10px;
+        }
+        #searchDiv {
+            margin-bottom: 10px;
+        }
+        .result-box, .address-list {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-top: 10px;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+        }
+        .result-box label {
+            font-weight: bold;
+        }
+        #addressInput {
+            width: 300px;
+            padding: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrap">
+    <h1>배송지 주소 검색</h1>
+    <div id="searchDiv">
+        <input type="text" id="addressInput" placeholder="도로명 주소를 입력하세요">
+        <button onclick="searchAddress()">주소 검색</button>
+    </div>
+    <div id="map"></div>
+
+    <!-- 검색 결과 목록 -->
+    <div id="addressList" class="address-list" style="display:none;"></div>
+
+    <!-- 선택한 주소 상세 정보 -->
+    <div id="result" class="result-box" style="display:none;">
+        <label>우편번호:</label>
+        <span id="postcode"></span>
+        <label>도로명 주소:</label>
+        <span id="roadAddress"></span>
+        <label>지번 주소:</label>
+        <span id="jibunAddress"></span>
+        <input type="text" id="detailAddress" placeholder="상세 주소를 입력하세요">
+        <button id="useAddressBtn" style="margin-top: 10px; display:none;" onclick="useAddress()">이 주소 사용하기</button>
+    </div>
+</div>
+
+<script>
+    var map;
+    var geocoder = new kakao.maps.services.Geocoder();
+
+    window.onload = function() {
+        var container = document.getElementById('map');
+        var options = {
+            center: new kakao.maps.LatLng(37.545, 126.986),
+            level: 7
+        };
+        map = new kakao.maps.Map(container, options);
+    };
+
+    function searchAddress() {
+        var address = document.getElementById("addressInput").value;
+
+        geocoder.addressSearch(address, function(result, status) {
+            if (status === kakao.maps.services.Status.OK && result.length > 0) {
+                displayAddressList(result);  // 주소 목록 표시
+            } else {
+                alert("주소 검색에 실패했습니다. 유효하지 않은 주소입니다.");
+            }
+        });
+    }
+
+    function displayAddressList(results) {
+        var addressList = document.getElementById("addressList");
+        addressList.innerHTML = ""; // 기존 목록 초기화
+
+        // 주소 목록 표시
+        results.forEach(function(item, index) {
+            var listItem = document.createElement("div");
+            listItem.innerHTML = (index + 1) + ". " + item.address.address_name;
+            listItem.style.cursor = "pointer";
+            listItem.onclick = function() { selectAddress(item); };
+            addressList.appendChild(listItem);
+        });
+
+        addressList.style.display = "block";
+    }
+
+    function selectAddress(item) {
+        var coords = new kakao.maps.LatLng(item.y, item.x);
+        
+        // 지도 중심을 검색된 좌표로 이동
+        map.setCenter(coords);
+
+        // 마커 생성 및 지도에 표시
+        var marker = new kakao.maps.Marker({
+            map: map,
+            position: coords
+        });
+
+        // 주소 정보 표시
+        displayAddressInfo(item.road_address, item.address);
+    }
+
+    function displayAddressInfo(roadAddress, jibunAddress) {
+        var postcode = roadAddress ? roadAddress.zone_no : '우편번호 없음';
+        var roadAddr = roadAddress ? roadAddress.address_name : '도로명 주소 없음';
+        var jibunAddr = jibunAddress ? jibunAddress.address_name : '지번 주소 없음';
+
+        document.getElementById('postcode').innerText = postcode;
+        document.getElementById('roadAddress').innerText = roadAddr;
+        document.getElementById('jibunAddress').innerText = jibunAddr;
+
+        document.getElementById('result').style.display = 'block';
+        document.getElementById('useAddressBtn').style.display = 'inline-block';
+    }
+
+    function useAddress() {
+        var roadAddress = document.getElementById('roadAddress').innerText;
+        var detailAddress = document.getElementById('detailAddress').value;
+        var fullAddress = roadAddress + ' ' + detailAddress;
+
+        if (!roadAddress) {
+            alert("도로명 주소가 유효하지 않습니다.");
+            return;
+        }
+
+        if (window.opener) {
+            var addressInputField = window.opener.document.getElementById("address");
+            if (addressInputField) {
+                addressInputField.value = fullAddress;
+            }
+        }
+        
+        window.close();
+    }
+</script>
+
+</body>
+</html>

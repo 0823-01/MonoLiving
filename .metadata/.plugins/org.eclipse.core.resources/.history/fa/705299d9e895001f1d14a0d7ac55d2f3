@@ -1,0 +1,193 @@
+package com.kh.member.model.service;
+
+import java.sql.Connection;
+import java.util.HashMap;
+
+import com.kh.common.JDBCTemplate;
+import com.kh.member.model.dao.MemberDao;
+import com.kh.member.model.vo.Member;
+
+public class MemberService {
+
+	
+	/**
+	 * 로그인 요청 서비스 메소드 
+	 * @param m => 사용자가 입력한 아이디, 비번 값 
+	 * @return => 로그인 할 사용자 1명의 정보
+	 */
+	
+	public Member loginMember(Member m) {
+		
+		
+//		1) Connection 객체 생성
+		Connection conn = JDBCTemplate.getConnection();
+		//2) Connection 객체와 전달값을 DAO로 넘기면서
+//			요청 후 결과 받기 
+		Member loginUser= new MemberDao().loginMember(conn,m);
+//		System.out.println(loginUser);
+//		3) DML문의 경우에만 트랜잭션 처리
+//		4) Connection 객체 반납 
+		
+		JDBCTemplate.close(conn);
+//		5) Controller 로 결과 리턴 
+		return loginUser;
+	}
+	
+	/**회원 가입 요청 서비스 메소드 
+	 * @param m => 회원 가입할 회원의 정보들 
+	 * @return = > 처리된 행의 갯수(int)
+	 */
+	public int insertMember(Member m) {
+		
+		
+//		1) Connection 객체 생성
+		Connection conn
+		= JDBCTemplate.getConnection();
+//		2) Connection 객체와 전달값을 넘기면서 
+//		dao로 요청 후 결과 받기
+		int result = new MemberDao().insertMember(conn,m);
+//		3) dml문의 경우 트랜잭션 처리
+		if(result>0) {
+			JDBCTemplate.commit(conn);
+		}else {
+			JDBCTemplate.rollback(conn);
+		}
+//		4) Connection 객체 반납
+		JDBCTemplate.close(conn);
+		
+//		5)Controller로 결과 반환 
+		return result;
+	}
+
+	/** 회원 정보 수정 요청 서비스 메소드
+	 * @param m => 수정할 회원의 정보
+	 * @return => 처리된 행의 갯수 
+	 */
+	
+	public Member updateMember(Member m) {
+	//		1)Connection 객체 생성
+			Connection conn = JDBCTemplate.getConnection();
+	//		2)Connection 객체와 전달값을 넘기면서
+	//		  DAO로 요청 후 결과 받기
+		int result=	new MemberDao().updateMember(conn, m);
+		
+	
+		// 갱신된 회원의 정보를 담을 변수
+		Member updateMem = null;
+		
+	//	3)DML문의 경우 트랜잭션 처리 
+		if(result > 0) { //성공(commit)
+			
+			JDBCTemplate.commit(conn);
+			
+			// 갱신된 회원의 정보를 다시 조회해오기!
+			// > session에 다시 덮어씌울 것
+			updateMem = new MemberDao().selectMember(conn, m.getUserId());
+			
+		}else {
+			JDBCTemplate.rollback(conn);
+		}
+	
+	//		4)Connection 객체 반납
+		JDBCTemplate.close(conn);
+		
+	//		5) Controller 로 결과 리턴 
+		return updateMem;
+		// > 회원 정보가 제대로 수정되었다면 Member 객체,
+		//   회원 정보가 수정되지 않았다면 null이 리턴됨
+	}  // updateMember 메소드 영역 끝
+	
+	
+	/**
+	 * 비밀번호 수정용 서비스 메소드
+	 * @param hm => 비밀번호를 변경할 회원의 정보
+	 * @return => 갱신된 회원의 정보
+	 */
+	public Member updatePwdMember(HashMap<String, String> hm) {
+		
+//		1) Connection 객체 생성
+		Connection conn = JDBCTemplate.getConnection();
+//		2)Connection 객체와 전달값을 넘기면서 DAO로 요청 후 결과 받기
+		int result = new MemberDao().updatePwdMember(conn, hm);
+		
+		Member updateMem = null;
+//		3)DML문의 경우 트랜잭션 처리
+		
+		if(result>0) {
+			JDBCTemplate.commit(conn);
+			
+			updateMem = new MemberDao().selectMember(conn, hm.get("userId"));
+			
+		}else {
+			JDBCTemplate.rollback(conn);
+		}
+		
+//		4)Connection 객체 반납
+		JDBCTemplate.close(conn);
+		
+//		5)Controller 로 결과 반환
+		return updateMem;
+	}
+	
+	/** 회원 탈퇴용 서비스 메소드
+	 * @param m => 탈퇴시킬 회원의 정보
+	 * @return = > 처리된 행의 갯수 
+	 */
+	public int deleteMember(Member m) {
+		
+//		1) Connection 객체 생성
+		Connection conn = JDBCTemplate.getConnection();
+//		2) Connection 객체와 전달값을 넘기면서
+//			DAO로 요청 후 결과 받기
+		
+		int result = new MemberDao().deleteMember(conn,m);
+		
+//		3) DML문의 경우 트랜잭션 처리
+		if(result > 0) { //성공시 commit 실패시 rollback
+			JDBCTemplate.commit(conn);
+		}else { 
+			JDBCTemplate.rollback(conn);
+		}
+//		4) Connection 객체 반납
+		JDBCTemplate.close(conn);
+//		5) Controller 로 결과 리턴 
+		return result;
+	}
+
+	/** 아이디 중복 체크 서비스용 메소드
+	 * @param checkId = > 중복 체크할 아이디
+	 * @return = > 현재 사용중인 아이디의 갯수
+	 */
+	public int idCheck(String checkId) {
+//		1) Conneciton 객체 생성
+		 Connection conn = JDBCTemplate.getConnection();
+//		2) Connection 객체와 전달값을 넘기면서 dao로 요청 후 결과 받기
+		 int count = new MemberDao().idCheck(conn, checkId);
+//		3) DML문의 경우 트랜잭션 처리 
+//		 패스
+
+//		4) Connection 객체 반납
+		JDBCTemplate.close(conn);
+//		5) Controller로 결과 반환 
+		return count;
+	}
+		
+	   public String findPassword(String userName, String email, String userId) {
+	        Connection conn = JDBCTemplate.getConnection(); // Connection 객체 생성
+	        String userPwd = new MemberDao().findPassword(conn, userName, email, userId); // DAO 호출
+	        
+	        JDBCTemplate.close(conn); // Connection 객체 반납
+	        return userPwd; // 비밀번호 반환
+	        
+	    }
+	
+	   public String findId(String userName, String email) {
+	        Connection conn = JDBCTemplate.getConnection(); // Connection 객체 생성
+	        String userId = new MemberDao().findId(conn, userName, email); // DAO 호출
+	        
+	        JDBCTemplate.close(conn); // Connection 객체 반납
+	        return userId; // 비밀번호 반환
+	        
+	    }
+	
+}

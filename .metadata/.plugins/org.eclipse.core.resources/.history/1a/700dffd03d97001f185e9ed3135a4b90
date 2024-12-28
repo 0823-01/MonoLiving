@@ -1,0 +1,54 @@
+package com.kh.order.model.service;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import com.kh.order.model.vo.Order;
+import com.kh.common.JDBCTemplate; // JDBC 템플릿 예시
+
+public class OrderService {
+    public ArrayList<Order> getAllOrders() {
+        ArrayList<Order> orderList = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        String query = "SELECT o.ORDER_NO, o.TOTAL_PRICE, o.RECIPIENT, o.ADDRESS, o.PHONE, o.STATUS, " +
+                       "o.RES_REQUIREMENT, o.PAY_CODE, o.ORDER_ENROLL, o.REFUND_DATE, o.USER_ID, " +
+                       "p.PRODUCT_NAME, pi.IMAGE_URL " +
+                       "FROM ORDERS o " +
+                       "JOIN PRODUCT_INFO p ON o.PRODUCT_NO = p.PRODUCT_NO " + // 상품 정보 조인
+                       "JOIN PRODUCT_IMAGE pi ON p.PRODUCT_NO = pi.PRODUCT_NO"; // 상품 이미지 조인
+
+        try {
+            conn = JDBCTemplate.getConnection();
+            pstmt = conn.prepareStatement(query);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setOrderNo(rs.getInt("ORDER_NO"));
+                order.setTotalPrice(rs.getInt("TOTAL_PRICE"));
+                order.setRecipient(rs.getString("RECIPIENT"));
+                order.setAddress(rs.getString("ADDRESS"));
+                order.setPhone(rs.getString("PHONE"));
+                order.setStatus(rs.getInt("STATUS"));
+                order.setResRequirement(rs.getString("RES_REQUIREMENT"));
+                order.setPayCode(rs.getString("PAY_CODE"));
+                order.setOrderEnroll(rs.getDate("ORDER_ENROLL")); // 오타 수정: ORDER_ENFORLL -> ORDER_ENROLL
+                order.setRefundDate(rs.getDate("REFUND_DATE"));
+                order.setUserId(rs.getString("USER_ID"));
+                order.setProductName(rs.getString("PRODUCT_NAME")); // 상품 이름 세팅
+                order.setImageUrl(rs.getString("IMAGE_URL")); // 상품 이미지 URL 세팅
+                
+                orderList.add(order);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            JDBCTemplate.close(rs, pstmt, conn);
+        }
+        return orderList;
+    }
+}

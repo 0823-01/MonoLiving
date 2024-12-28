@@ -1,0 +1,46 @@
+package com.kh.order.controller;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Connection;
+import com.kh.order.model.service.OrderService;
+import static com.kh.common.JDBCTemplate.*;
+
+@WebServlet("/updateOrderStatus.me")
+public class UpdateOrderStatus extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        int orderId = Integer.parseInt(request.getParameter("orderId"));
+        int status = Integer.parseInt(request.getParameter("status"));
+        System.out.println("Order ID: " + orderId + ", Status: " + status); // 로그 출력
+
+        Connection conn = null;
+        OrderService orderService = new OrderService();
+
+        try {
+            conn = getConnection(); // 데이터베이스 연결
+            boolean isUpdated = orderService.updateOrderStatus(conn, orderId, status);
+
+            if (isUpdated) {
+                commit(conn); // 성공 시 커밋
+                response.setStatus(HttpServletResponse.SC_OK); // 성공 상태
+                response.getWriter().write("Status updated successfully.");
+            } else {
+                rollback(conn); // 실패 시 롤백
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 실패 상태
+                response.getWriter().write("Failed to update status.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            rollback(conn); // 오류 발생 시 롤백
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 서버 오류 상태
+            response.getWriter().write("An error occurred.");
+        } finally {
+            close(conn); // 연결 해제
+        }
+    }
+}

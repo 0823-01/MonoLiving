@@ -1,0 +1,342 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.ArrayList, com.kh.cart.model.vo.Cart, java.text.NumberFormat" %>
+<%
+	ArrayList<Cart> list = (ArrayList<Cart>)request.getAttribute("list");
+
+	// 세자릿수마다 콤마 찍으려구
+	NumberFormat formatter = NumberFormat.getNumberInstance();
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>장바구니</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        width: 1200px; /* 전체 컨테이너 가로 사이즈 */
+        display: flex;
+        justify-content: space-between;
+        margin: 0 auto; /* 화면 중앙에 배치 */
+        padding-top: 50px;
+    }
+
+    .cart-items {
+        width: 65%; /* cart-items의 가로 사이즈를 container의 65%로 설정 */
+        padding: 0 20px;
+    }
+
+    .cart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 20px;
+    }
+
+    .cart-header button, .delete-btn {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 30px;
+        font-size: 12px;
+    }
+
+    .cart-item {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .checkbox-delete {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .product-info {
+        display: flex;
+        align-items: center;
+    }
+
+    .product-image {
+        width: 100px;
+        height: 100px;
+        background-color: #ddd;
+        margin-right: 20px;
+    }
+
+    .product-details h2 {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        overflow: hidden;
+        width: 80px;
+        margin-top: 10px;
+    }
+
+    .quantity-btn {
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 5px;
+        font-size: 18px;
+        cursor: pointer;
+        width: 25px;
+        height: 25px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+    }
+
+    .quantity-btn:hover {
+        background-color: #f0f0f0;
+    }
+
+    #quantity-input {
+        width: 30px;
+        text-align: center;
+        border: none;
+        font-size: 14px;
+        outline: none;
+    }
+
+    .price-section {
+        margin-top: 10px;
+    }
+
+    .bottom-box, .delivery-fee {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .bottom-box {
+        margin-bottom: 5px;
+    }
+
+    .delivery-fee {
+        margin-bottom: 25px;
+    }
+
+    .original-price, .total-original-price {
+        color: gray;
+        font-size: 14px;
+        text-align: right;
+    }
+
+    .discount-price {
+        font-weight: 600;
+        font-size: 18px;
+        margin: 0;
+    }
+
+    .delivery-fee {
+        font-size: 14px;
+    }
+
+    /* 결제 정보 영역 */
+    .payment-summary {
+        width: 35%;
+        position: relative;
+        padding: 10px;
+    }
+
+    .summary-box {
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        position: fixed;
+        width: 25%;
+    }
+
+    .total-discount-price, .total-delivery-price, .real-total-price {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .total-discount-price {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    .total-delivery-price {
+        font-size: 14px;
+    }
+
+    .real-total-price {
+        font-weight: 600;
+        font-size: 22px;
+    }
+
+    /* 버튼 스타일 */
+    .buy-now, .checkout-btn {
+        background-color: #000;
+        color: #fff;
+        padding: 10px 50px;
+        border: 1px solid black;
+        border-radius: 60px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .checkout-btn {
+        width: 100%;
+        font-size: 18px;
+    }
+
+    .buy-now:hover, .checkout-btn:hover {
+        background-color: #fff;
+        color: #000;
+        border: 1px solid black;
+    }
+</style>
+</head>
+<body>
+
+	<%@ include file="../common/header.jsp" %>
+
+	<div class="container">
+        <!-- 왼쪽 상품 리스트 영역 -->
+        <div class="cart-items">
+            <div class="cart-header">
+                <label>
+                    <input type="checkbox" id="select-all" onclick="toggleSelectAll(this)">
+                    <span class="select-all">전체선택</span>
+                </label>
+                <button class="delete-selected">선택 삭제</button>
+            </div>
+
+			<% if (list.isEmpty()) { %>
+				<p>장바구니가 비어 있습니다.</p>
+			<% } else { %>
+
+	            <!-- 장바구니 상품 리스트 출력 -->
+	            <% for (Cart c : list) { %>
+	            <div class="cart-item">
+	            
+	                <div class="checkbox-delete">
+	                    <input type="checkbox" name="cartItem" class="cart-item-checkbox" value="<%= c.getCartNo() %>" onclick="updateSelectAllCheckbox()">
+	                    <button class="delete-btn" onclick="deleteCartItem(<%= c.getCartNo() %>)">삭제</button>
+	                </div>
+	                
+	                <div class="product-info">
+	                    <img src="<%= request.getContextPath() %>/<%= c.getTitleImg() %>" alt="상품 이미지" class="product-image">
+	                    <div class="product-details">
+	                        <h2><%= c.getProductName() %></h2>
+	                        
+	                        <div class="quantity-control">
+							    <input type="number" min="1" id="quantity" value="<%= c.getProductQuantity() %>" onchange="updateQuantity(<%= c.getCartNo() %>, this.value)">
+							    <button class="quantity-btn" onclick="updateQuantity(<%= c.getCartNo() %>, document.getElementById('quantity').value)">수량 변경</button>
+							</div>
+							
+							<div class="price-section">
+	                            <p>가격: <%= formatter.format(c.getProductPrice()) %>원</p>
+	                            <p class="discount-price">할인 가격: <%= formatter.format(c.getDiscountedPrice()) %>원</p>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	            <% } %>
+			<% } %>
+        </div>
+
+        <!-- 오른쪽 결제 정보 영역 -->
+        <div class="payment-summary">
+            <div class="summary-box">
+                <h3>결제 정보</h3>
+                <div class="total-discount-price">
+                    <p>총 할인 금액</p>
+                    <p id="sum_p_price">0원</p>
+                </div>
+                <div class="total-delivery-price">
+                    <p>배송비</p>
+                    <p id="sum_delivery_price">0원</p>
+                </div>
+                <div class="real-total-price">
+                    <p>최종 결제 금액</p>
+                    <p id="final_price">0원</p>
+                </div>
+                <button class="checkout-btn">결제하기</button>
+            </div>
+        </div>
+    </div>
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		function deleteCartItem(cartNo) {
+		    if (confirm("해당 상품을 장바구니에서 삭제하시겠습니까?")) {
+		        $.ajax({
+		            url: "delete.ct", // 삭제 요청을 처리하는 서블릿 URL
+		            method: "POST",
+		            data: { cartNo: cartNo },
+		            success: function(response) {
+		                if (response.trim() === "success") {
+		                    location.reload(); // 페이지를 새로 고쳐 장바구니 업데이트
+		                } else {
+		                    alert("삭제 실패!");
+		                }
+		            },
+		            error: function() {
+		                alert("오류가 발생했습니다.");
+		            }
+		        });
+		    }
+		}
+
+		function toggleSelectAll(selectAllCheckbox) {
+		    var checkboxes = document.querySelectorAll('.cart-item-checkbox');
+		    checkboxes.forEach(checkbox => {
+		        checkbox.checked = selectAllCheckbox.checked;
+		    });
+		}
+
+		function updateSelectAllCheckbox() {
+		    var checkboxes = document.querySelectorAll('.cart-item-checkbox');
+		    var selectAllCheckbox = document.getElementById('select-all');
+		    selectAllCheckbox.checked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+		}
+
+		function updateQuantity(cartNo, quantity) {
+		    $.ajax({
+		        url: "updateQuantity.ct",
+		        method: "POST",
+		        data: { cartNo: cartNo, quantity: quantity },
+		        success: function(response) {
+		            if (response.trim() === "success") {
+		                location.reload(); // 페이지를 새로 고쳐 장바구니 업데이트
+		            } else {
+		                alert("수량 업데이트 실패!");
+		            }
+		        },
+		        error: function() {
+		            alert("오류가 발생했습니다.");
+		        }
+		    });
+		}
+	</script>
+</body>
+</html>

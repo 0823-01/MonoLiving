@@ -1,0 +1,62 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page import="java.util.ArrayList, com.kh.product.model.vo.ProductInfo" %>
+<%
+	ArrayList<ProductInfo> list = (ArrayList<ProductInfo>)request.getAttribute("list");
+%>   
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+
+
+</style>
+</head>
+<body>
+		<%@ include file="../common/header.jsp" %>
+
+
+ 		<section class="product-list">
+	
+	        <div id="content_3">
+			  <div id="bar">
+			    <div id="box">
+			      <ul id="item-count">
+			        <li>총 67개</li>
+			      </ul>
+			      <ul id="sorting-options">
+			        <li>추천순</li>
+			        <li>낮은가격순</li>
+			        <li>높은가격순</li>
+			      </ul>
+			    </div>
+			  </div>
+			  
+		
+			  <div id="productList">
+			    <ul class="product-grid">
+			    
+					
+					    <li class="product-item" data-pno="">
+					        <img src="" alt="의자">
+					        <p>
+					            의자 <br>
+					            50000원
+					        </p>
+					    </li>
+				</ul>
+			    
+			</div>
+	        <!-- 페이지네이션 -->
+	        <div class="pagination">
+	            <span>1</span>
+	            <span>2</span>
+	            <span>3</span>
+	            <span>4</span>
+	            <span>5</span>
+	        </div>
+	    </section>
+</body>
+</html>
