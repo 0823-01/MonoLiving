@@ -1,0 +1,60 @@
+package com.kh.order.model.dao;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Properties;
+
+import com.kh.order.model.vo.Order;
+
+import static com.kh.common.JDBCTemplate.*;
+
+public class OrderDao {
+    private Properties prop = new Properties();
+
+    public OrderDao() {
+        String fileName = OrderDao.class.getClassLoader().getResource("/sql/order/order-mapper.xml").getPath();
+        
+        try {
+            prop.loadFromXML(new FileInputStream(fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int insertOrder(Order order) {
+        Connection conn = getConnection();
+        PreparedStatement pstmt = null;
+        int result = 0;
+
+        String sql = prop.getProperty("insertOrder");  // Retrieve the SQL statement
+
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, order.getTotalPrice());
+            pstmt.setString(2, order.getRecipient());
+            pstmt.setString(3, order.getAddress());
+            pstmt.setString(4, order.getPhone());
+            pstmt.setString(5, order.getStatus());
+            pstmt.setString(6, order.getResRequirement());
+            pstmt.setString(7, order.getPayCode());
+            pstmt.setInt(8, order.getUserId());  // userId는 8번째 매개변수로 설정
+
+            result = pstmt.executeUpdate();
+            if (result > 0) {
+                commit(conn);
+            } else {
+                rollback(conn);
+            }
+        } catch (SQLException e) {
+            rollback(conn);  // 예외 발생 시 롤백
+            e.printStackTrace();
+        } finally {
+            close(pstmt);
+            close(conn);
+        }
+        return result;
+    }
+}

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+	<entry key="selectProduct">
+		SELECT PRODUCT_NO
+		     , CATEGORY_NAME
+		     , PRODUCT_NAME
+		     , PRICE
+             , PRODUCT_QUANTITY
+		FROM PRODUCT_INFO
+		JOIN CATEGORY USING (CATEGORY_NO)
+	</entry>
+	
+	<!-- 상품 정보 등록용 쿼리문 -->
+	<entry key="insertProductInfo">
+		INSERT INTO PRODUCT_INFO (PRODUCT_NO
+                                , PRODUCT_NAME
+                                , PRODUCT_DESCRIPTION
+                                , CATEGORY_NO
+                                , PRICE
+                                , PRODUCT_QUANTITY
+                                , PRODUCT_SIZE
+                                , MATERIAL
+                                , COLOR
+                                , ASSEMBLY_YN
+                                , DISCOUNT
+                                , COUNTRY
+                                , PRO_CREATE_AT)
+		VALUES(SEQ_PNO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE)
+	</entry>
+	
+	<!-- 상품 이미지 첨부파일 등록용 쿼리문 -->
+	<entry key="insertProductImage">
+		INSERT INTO PRODUCT_IMAGE (IMAGE_NO
+                                 , REF_PNO
+                                 , IMG_ORIGINAL_FILE
+                                 , IMG_SAVE_FILE
+                                 , IMAGE_URL
+                                 , THUMBNAIL)
+		VALUES (SEQ_IMG_PNO.NEXTVAL, SEQ_PNO.CURRVAL, ?, ?, ?, ?)
+		
+		
+	</entry>
+	
+	<!-- 상품 목록 조회용 쿼리문 -->
+	<entry key="selectList">
+		    SELECT *
+		    FROM (
+		        SELECT ROWNUM RNUM, A.*
+		        FROM (
+		            SELECT PRODUCT_NO
+		                 , CATEGORY_NAME
+		                 , PRODUCT_NAME
+		                 , PRICE
+		                 , PRODUCT_QUANTITY
+		            FROM PRODUCT_INFO
+		            JOIN CATEGORY USING (CATEGORY_NO)
+		        ) A
+		    )
+		    WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<!-- 상품 전체 갯수 조회용 쿼리문 -->
+	<entry key="selectListCount">
+		SELECT COUNT(*) AS COUNT
+		FROM PRODUCT_INFO
+	</entry>
+	
+	
+	<!-- 상품 상세 조회용 (상품정보) 쿼리문 -->
+	<entry key="selectProductInfo">
+		SELECT PRODUCT_NO
+             , CATEGORY_NAME
+             , PRODUCT_NAME
+             , PRICE
+             , PRODUCT_QUANTITY
+             , PRODUCT_DESCRIPTION
+             , PRODUCT_SIZE
+             , MATERIAL
+             , COLOR
+             , ASSEMBLY_YN
+             , DISCOUNT
+             , COUNTRY
+             , PRO_CREATE_AT
+		FROM PRODUCT_INFO
+		JOIN CATEGORY USING (CATEGORY_NO)
+		WHERE PRODUCT_NO = ?
+	</entry>
+	
+	<!-- 상품 상세 조회용 (상품 이미지) 쿼리문 -->
+	<entry key="selectProductImage">
+		SELECT IMAGE_NO
+             , IMG_ORIGINAL_FILE
+             , IMG_SAVE_FILE
+             , IMAGE_URL
+		FROM PRODUCT_IMAGE
+		WHERE REF_PNO = ?
+	</entry>
+	
+	
+	<!-- 상품 정보 수저용 쿼리문 -->
+	<entry key="">
+		UPDATE PRODUCT_INFO
+		SET PRODUCT_NAME =?
+	      , CATEGORY_NO =?
+	      , PRICE =?
+	      , PRODUCT_QUANTITY =?
+	      , PRODUCT_DESCRIPTION =?
+	      , PRODUCT_SIZE =?
+	      , MATERIAL =?
+	      , COLOR =?
+	      , ASSEMBLY_YN =?
+	      , DISCOUNT =?
+	      , COUNTRY =?
+		WHERE PRODUCT_NO = ?
+	</entry>
+	
+	
+	<!-- 첨부파일 수정용 쿼리문(기존에 첨부파일 있었을 경우) -->
+	<entry key="updateProductImage">
+		UPDATE PRODUCT_IMAGE
+		SET IMG_ORIGINAL_FILE = ? 
+	      , IMG_SAVE_FILE = ?
+		WHERE IMAGE_NO = ?
+	</entry>
+	
+	<!-- 첨부파일 수정용 쿼리문(기존에 첨부파일 없었을 경우) -->
+	<entry key="insertNewProductImage">
+		INSERT INTO PRODUCT_IMAGE (IMAGE_NO
+                                 , REF_PNO
+                                 , IMG_ORIGINAL_FILE
+                                 , IMG_SAVE_FILE
+                                 , IMAGE_URL)
+		VALUES(SEQ_IMG_PNO.NEXTVAL, ?, ?, ?, ?);
+	</entry>
+	
+	
+	
+	
+	
+	
+
+</properties>

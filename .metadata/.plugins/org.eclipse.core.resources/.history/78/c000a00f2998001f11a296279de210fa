@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+	<!-- 장바구니 상품 총 갯수 조회용 쿼리문 -->
+	<entry key="selectListCount">
+		SELECT COUNT(*) AS COUNT
+		  FROM CART
+	</entry>
+
+	<!-- 장바구니 상품 목록 조회용 쿼리문 -->
+	<entry key="getCartList">
+		SELECT c.CART_NO
+		     , c.PRODUCT_QUANTITY
+		     , c.TOTAL_PRICE
+		     , c.USER_NO
+		     , c.PRODUCT_NO
+		     , p.PRODUCT_NAME
+		     , p.PRICE
+		     , p.DISCOUNT
+		     , p.PRICE * (1 - p.DISCOUNT / 100) AS "DISCOUNT_PRICE"
+		     , c.PRODUCT_QUANTITY * (p.PRICE * (1 - p.DISCOUNT / 100)) AS "TOTAL_DISCOUNT_PRICE"
+		     , i.IMAGE_URL || i.IMG_SAVE_FILE AS "TITLEIMG"
+		  FROM CART c
+		  JOIN PRODUCT_INFO p ON (c.PRODUCT_NO = p.PRODUCT_NO)
+		  LEFT JOIN PRODUCT_IMAGE i ON p.PRODUCT_NO = i.REF_PNO 
+		   AND i.THUMBNAIL = 'Y'
+		   AND i.DELETE_YN = 'N'
+		 WHERE c.USER_NO = ?
+	</entry>
+	
+	<entry key="deleteCartItem">
+	    DELETE
+	      FROM CART
+	     WHERE CART_NO = ?
+	</entry>
+	
+	
+	<entry key="addToCart">
+INSERT INTO CART (USER_NO, PRODUCT_NO, PRODUCT_QUANTITY, PRICE, TOTAL_PRICE) VALUES (?, ?, ?, ?, ?)
+
+
+</entry>
+
+	
+	
+</properties>
+

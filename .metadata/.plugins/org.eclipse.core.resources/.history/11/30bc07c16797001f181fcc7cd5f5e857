@@ -1,0 +1,39 @@
+package com.kh.order.controller;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.json.simple.JSONObject;
+
+import com.kh.order.model.service.OrderService;
+
+@WebServlet("/updateOrderStatus.me")
+public class UpdateOrderStatus extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json; charset=UTF-8");
+        PrintWriter out = response.getWriter();
+
+        String orderId = request.getParameter("orderId");
+        String status = request.getParameter("status");
+
+        OrderService orderService = new OrderService();
+        boolean result = orderService.updateOrderStatus(orderId, status);
+
+        JSONObject jsonResponse = new JSONObject();
+        if (result) {
+            jsonResponse.put("status", "success");
+        } else {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", "상태 업데이트 중 오류가 발생했습니다.");
+        }
+        
+        out.print(jsonResponse);
+        out.flush();
+    }
+}

@@ -1,0 +1,82 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" import="com.kh.member.model.vo.Member" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Layout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 400px;
+            margin: 100px auto;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        input[type="text"], input[type="email"]{
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            border: 1px solid #000;
+            box-sizing: border-box;
+        }
+        .link {
+            margin-bottom: 20px;
+            display: block;
+            text-align: left;
+            font-size: 14px;
+            color: #000;
+        }
+        .link:hover {
+            text-decoration: underline;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color:black;
+            color: white;
+            border: 1px solid;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color:white;
+            color: black;
+        }
+        .cancel-btn {
+            background-color: white;
+            color: black;
+            border: 1px solid #000;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <form>
+      
+
+        <label for="userName">NAME *</label>
+        <input type="text" id="userName" name="userName" required>
+        <label for="userId">ENTER YOUR E-MAIL *</label>
+        <input type="text" id="userEmail" name="userEmail" required>
+     
+
+        <a href="#" class="link">Create an account</a>
+
+        <button type="submit">확인</button>
+        <button type="reset" class="cancel-btn">취소</button>
+    </form>
+</div>
+
+</body>
+</html>

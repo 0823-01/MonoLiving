@@ -1,0 +1,20 @@
+package com.kh.order.model.service;
+
+import java.sql.Connection;
+import com.kh.order.model.dao.OrderDao;
+
+public class OrderService {
+    
+    public boolean updateOrderStatus(Connection conn, int orderId, int status) {
+        OrderDao orderDao = new OrderDao();
+        boolean isUpdated = orderDao.updateOrderStatus(conn, orderId, status);
+        
+        if (isUpdated) {
+            commit(conn); // 성공 시 커밋
+        } else {
+            rollback(conn); // 실패 시 롤백
+        }
+        
+        return isUpdated;
+    }
+}

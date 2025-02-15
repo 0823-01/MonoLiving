@@ -1,0 +1,153 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>배송지 정보</title>
+    
+    <style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.address-info-container {
+    width: 400px;
+    margin: 20px auto;
+    border: 1px solid #ddd;
+    padding: 20px;
+    background-color: #fff;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header h2 {
+    font-size: 18px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.add-address-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.address {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    position: relative;
+}
+
+.address label {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.address label input[type="radio"] {
+    margin-right: 8px;
+}
+
+.default {
+    font-size: 12px;
+    color: #007bff;
+    margin-left: 5px;
+}
+
+.address p {
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+.edit-btn, .delete-btn {
+    font-size: 12px;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.save-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="address-info-container">
+        <div class="header">
+            <h2>배송지 정보</h2>
+            <button class="close-btn">×</button>
+        </div>
+        
+        <button class="add-address-btn">배송지 추가하기</button>
+        
+        <form>
+            <div class="address">
+                <label>
+                    <input type="radio" name="defaultAddress" checked>
+                    <span>김형석 <span class="default">기본 배송지</span></span>
+                </label>
+                <p>인천 동구 송현로 50 116동1201호</p>
+                <p>010-8456-3774</p>
+                <button type="button" class="edit-btn">수정</button>
+                <button type="button" class="delete-btn">삭제</button>
+            </div>
+            
+            <div class="address">
+                <label>
+                    <input type="radio" name="defaultAddress">
+                    <span>양한안</span>
+                </label>
+                <p>인천 동구 송림로 50 (삼익아파트) 1동 508호</p>
+                <p>010-4773-0694</p>
+                <button type="button" class="edit-btn">수정</button>
+                <button type="button" class="delete-btn">삭제</button>
+            </div>
+            
+            <div class="address">
+                <label>
+                    <input type="radio" name="defaultAddress">
+                    <span>정수경</span>
+                </label>
+                <p>인천광역시 남동구 인하로411번길 10(구월동) 3층</p>
+                <p>010-4807-3784</p>
+                <button type="button" class="edit-btn">수정</button>
+                <button type="button" class="delete-btn">삭제</button>
+            </div>
+            
+            <button type="submit" class="save-btn">변경하기</button>
+        </form>
+    </div>
+</body>
+</html>

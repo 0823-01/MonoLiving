@@ -1,0 +1,53 @@
+package com.kh.product.controller;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.kh.product.model.dao.ProductInfoDao;
+import com.kh.product.model.vo.ProductInfo;
+
+/**
+ * Servlet implementation class PricelistDescController
+ */
+@WebServlet("/PricelistDesc.pr")
+public class PricelistDescController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public PricelistDescController() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		ProductInfoDao dao = ProductInfoDao.getInstance();
+		
+		List<ProductInfo> productList = dao.selectPricelistdesc();
+		request.setAttribute("productList", productList);
+		
+		RequestDispatcher dispatcher = request.getRequestDispatcher("product_index/phonepricelistdesc.jsp");
+		dispatcher.forward(request, response);
+		System.out.println("전송완료");
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}

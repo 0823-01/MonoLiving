@@ -1,0 +1,121 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" import="com.kh.member.model.vo.Member" %>
+
+<%
+String contextPath = request.getContextPath();
+
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>비밀번호 찾기</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#findPasswordButton').on('click', function(e) {
+                e.preventDefault(); 
+                
+                var userName = $('#userName').val();
+                var email = $('#email').val();
+                var userId = $('#userId').val();
+
+                $.ajax({
+                    url: '<%= request.getContextPath() %>/pwReset.pw',
+                    type: 'GET',
+                    data: {
+                        userName: userName,
+                        email: email,
+                        userId: userId
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            alert(response.message);
+                            window.location.href = '<%= request.getContextPath() %>/views/member/findPasswordResult.jsp';
+                        } else {
+                            alert("입력한 정보에 일치하는 비밀번호가 없습니다"); 
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX 요청 실패:', error);
+                    }
+                });
+
+
+            });
+            
+        });
+    </script>
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    .container {
+        width: 400px;
+        margin: 100px auto;
+        text-align: left;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+    input[type="text"], input[type="email"],input[type="id"]{
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        font-size: 16px;
+        border: 1px solid #000;
+        box-sizing: border-box;
+    }
+    .link {
+        margin-bottom: 20px;
+        display: block;
+        text-align: left;
+        font-size: 14px;
+        color: #000;
+    }
+    .link:hover {
+        text-decoration: underline;
+    }
+    button {
+        width: 100%;
+        padding: 15px;
+        background-color:black;
+        color: white;
+        border: 1px solid;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    button:hover {
+        background-color:white;
+        color: black;
+    }
+    .cancel-btn {
+        background-color: white;
+        color: black;
+        border: 1px solid #000;
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+
+
+    <div class="container">
+    <h1>비밀번호 찾기</h1>
+    <form id="findPasswordForm"> 
+        <label for="userName">이름:</label>
+        <input type="text" id="userName" name="userName" required><br>
+        <label for="email">이메일:</label>
+        <input type="email" id="email" name="email" required><br>
+        <label for="userId">아이디:</label>
+        <input type="text" id="userId" name="userId" required><br>
+        <button id="findPasswordButton">비밀번호 찾기</button>
+    </form>
+</div>
+</body>
+</html>

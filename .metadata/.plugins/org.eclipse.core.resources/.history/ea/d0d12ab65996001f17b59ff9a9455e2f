@@ -1,0 +1,204 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page import="java.util.ArrayList, com.kh.review.model.vo.Review" %>
+<%
+	ArrayList<Review> list = (ArrayList<Review>)request.getAttribute("list");
+	ArrayList<String> thumbnail = (ArrayList<String>)request.getAttribute("thumbnail");
+%>
+  
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>MONO Living</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link  rel="preconnect"
+       href="https://fonts.gstatic.com"
+       crossorigin="crossorigin">
+<link  href="https://fonts.googleapis.com/css2?family=Zen+Antique+Soft&family=
+				Zen+Kaku+Gothic+New:wght@300;400;500;700;900&display=swap"
+       rel="stylesheet">
+<title>MONO</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+    }
+    .outer {
+        width : 600px;
+        box-sizing: border-box;
+        display: flex;
+    }
+    
+    /* 이미지 슬라이더 상세 스타일 */
+    .slider-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 50px;
+        width : 100%;
+    }
+    .slider-images {
+        display: flex;
+        overflow-x: auto;
+    }
+    .slider-images img {
+        width: 150px;
+        margin-right: 10px;
+        scroll-snap-align: start;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .arrow {
+        font-size: 2em;
+        cursor: pointer;
+        color: #666;
+        padding : 20px;
+    }
+
+    /* 리뷰 프로필 상세 스타일 */
+    .review-profile {
+        flex-direction: column; /* 프로필 섹션을 세로로 배치 */
+        align-items: flex-start;
+        border-top: 1px solid #ccc;
+        width: 600px;
+        margin: auto;
+        padding: 20px;
+        display: flex;
+        box-sizing: border-box;
+    }
+    .review-profile>a {
+        margin-left: auto;
+    }
+    .profile-header {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+    .profile-details {
+        margin-left: 10px;
+    }
+    .profile-pic {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #ccc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+        color: white;
+        margin-right: 15px;
+    }
+    .profile-name {
+        font-weight: bold;
+        margin-bottom: 5px;
+        text-align: left;
+    }
+    .review-date {
+        color: #777;
+        font-size: 0.9em;
+        text-align: left;
+        margin: 0px;
+    }
+    .rating {
+        color: gold;
+    }
+    /* 리뷰 내용 상세 스타일 */
+    .review-content {
+        margin : 20px;
+        width : 600px;
+        box-sizing: border-box;
+    }
+    .review-star {
+        color: gold;
+        margin-bottom: 15px;
+    }
+    .review-images {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+    }
+    .review-images img {
+        width: 120px;
+        height : 120px;
+        border-radius: 5px;
+    }
+    
+    /* 별점 스타일 */
+	.star-rating .star {
+        font-size: 24px;
+        cursor: pointer;
+        color: #ccc; /* 기본 별 색 */
+    }
+    .star-rating .star.on {
+        color: gold; /* 선택된 별 색 */
+    }
+    
+</style>
+</head>
+<body>
+
+	<%@ include file="../common/header.jsp" %>
+
+	
+      <div class="review-outer">
+        <!-- 이미지 슬라이더 -->
+        <div class="slider-container">
+            <div class="arrow" onclick="arrowLeft();">◀</div>
+            <div class="slider-images">
+                <img src="resources/images/products/newProduct03.jpg" alt="상품 이미지 1">
+                <img src="resources/images/products/newProduct03.jpg" alt="상품 이미지 2">
+                <img src="resources/images/products/newProduct03.jpg" alt="상품 이미지 3">
+                <img src="resources/images/products/newProduct03.jpg" alt="상품 이미지 4">
+                <img src="resources/images/products/newProduct03.jpg" alt="상품 이미지 5">
+            </div>
+            <div class="arrow" onclick="arrowRight();">▶</div>
+        </div>
+        
+        <!-- 리뷰 목록 -->
+        <div class="list-area">
+            <% if (list.isEmpty()) { %>
+                <p align="center">등록된 리뷰가 없습니다.</p>
+            <% } else { %>
+                <% for (Review r : list) { %>
+                    <div class="review-profile">
+                        <% if (loginUser != null && loginUser.getUserId().equals(r.getReviewWriter())) { %>
+                            <a href="<%= contextPath %>/delete.re?rno=<%= r.getReviewNo() %>" class="btn-danger">삭제하기</a>
+                        <% } %>
+
+                        <div class="profile-header">
+                            <div class="profile-pic">A</div>
+                            <div>
+                                <div class="profile-name">
+                                    <%= r.getReviewWriter().substring(0, 1) %><% for (int i = 1; i < r.getReviewWriter().length(); i++) { %>*<% } %>
+                                </div>
+                                <div class="review-date">2023.10.18</div>
+                                <div class="star-rating">
+                                    <% int starValue = r.getReviewStar(); %>
+                                    <% for (int i = 1; i <= 5; i++) { %>
+                                        <span class="star <%= (i <= starValue) ? "on" : "" %>">★</span>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="review-content">
+                            <p class="review-text"><%= r.getReviewComment() %></p>
+                            <div class="review-images">
+                                <% if (r.getThumbnail().isEmpty()) { %>
+                                    <p>등록된 이미지가 없습니다.</p>
+                                <% } else { %>
+                                    <% for (int i = 0; i < r.getThumbnail().size(); i++) { %>
+                                        <img src="<%= contextPath %>/<%= r.getThumbnail().get(i) %>" alt="리뷰 이미지 <%= i + 1 %>">
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+
+        </div>
+    </div>
+</body>
+</html>

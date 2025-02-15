@@ -1,0 +1,61 @@
+package com.kh.order.model.vo;
+
+public class Order {
+    private int orderId;
+    private String customerName;
+    private String productName;
+    private int price;
+    private int status;
+    
+    
+    public Order() {
+    
+    }
+	public int getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
+	}
+	public String getCustomerName() {
+		return customerName;
+	}
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+	public String getProductName() {
+		return productName;
+	}
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+	public int getPrice() {
+		return price;
+	}
+	public void setPrice(int price) {
+		this.price = price;
+	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	public Order(int orderId, String customerName, String productName, int price, int status) {
+		super();
+		this.orderId = orderId;
+		this.customerName = customerName;
+		this.productName = productName;
+		this.price = price;
+		this.status = status;
+	}
+	@Override
+	public String toString() {
+		return "Order [orderId=" + orderId + ", customerName=" + customerName + ", productName=" + productName
+				+ ", price=" + price + ", status=" + status + "]";
+	}
+
+ 
+    
+    
+}

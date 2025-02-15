@@ -1,0 +1,159 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+/* 기본 스타일 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    color: #333;
+}
+
+header {
+    text-align: center;
+    padding: 20px;
+    background-color: #E5D2B8;
+    color: #333;
+    border-bottom: 1px solid #ccc;
+}
+
+header h1 {
+    font-size: 2em;
+    margin-bottom: 5px;
+}
+
+header p {
+    font-size: 1em;
+    color: #555;
+}
+
+/* 찜한 상품 목록 스타일 */
+.wishlist-container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.wishlist-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+    justify-content: center;
+}
+
+.wishlist-item {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-align: center;
+    width: 220px;
+    transition: transform 0.2s;
+    position: relative;
+}
+
+.wishlist-item:hover {
+    transform: translateY(-5px);
+}
+
+.wishlist-item img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.wishlist-info {
+    padding: 15px;
+}
+
+.wishlist-info h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.price {
+    font-size: 1em;
+    color: #D9534F;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.remove-btn {
+    background-color: #D9534F;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    font-size: 0.9em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.remove-btn:hover {
+    background-color: #c12e2a;
+}
+
+/* 푸터 스타일 */
+footer {
+    background-color: #f1f1f1;
+    text-align: center;
+    padding: 15px;
+    font-size: 0.8em;
+    color: #666;
+    border-top: 1px solid #ccc;
+    margin-top: 30px;
+}
+
+
+
+
+</style>
+</head>
+<body>
+	<%@ include file="../common/header.jsp" %>
+	
+    <header>
+        <h1>찜한 상품</h1>
+        <p>관심 있는 상품을 확인해 보세요!</p>
+    </header>
+    <main class="wishlist-container">
+        <ul class="wishlist-grid">
+            <li class="wishlist-item">
+                <img src="product1.jpg" alt="상품 이미지 1">
+                <div class="wishlist-info">
+                    <h3>상품명 1</h3>
+                    <p class="price">₩100,000</p>
+                    <button class="remove-btn">삭제</button>
+                </div>
+            </li>
+            <li class="wishlist-item">
+                <img src="product2.jpg" alt="상품 이미지 2">
+                <div class="wishlist-info">
+                    <h3>상품명 2</h3>
+                    <p class="price">₩120,000</p>
+                    <button class="remove-btn">삭제</button>
+                </div>
+            </li>
+            <!-- 다른 찜한 상품들도 동일하게 추가 -->
+        </ul>
+    </main>
+    <footer>
+        <p>싱글벙글 쇼핑몰 &copy; 2024</p>
+    </footer>
+    
+    <%@ include file="../common/footer.jsp" %>
+</body>
+</html>

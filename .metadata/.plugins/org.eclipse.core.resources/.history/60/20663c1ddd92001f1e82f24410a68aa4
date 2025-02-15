@@ -1,0 +1,186 @@
+package com.kh.product.model.service;
+
+import static com.kh.common.JDBCTemplate.*;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+
+import com.kh.common.model.vo.PageInfo;
+import com.kh.product.model.dao.ProductInfoDao;
+import com.kh.product.model.vo.ProductImage;
+import com.kh.product.model.vo.ProductInfo;
+
+public class ProductInfoService {
+
+	/**
+	 * 관리자 전용 상품 목록을 조회해오는 메소드
+	 * @return => 조회된 상품의 총 갯수
+	 */
+	/*
+	public ArrayList<ProductInfo> selectProduct() {
+		
+		Connection conn = getConnection();
+		
+		ArrayList<ProductInfo> list = new ProductInfoDao().selectProduct(conn);
+		
+		close(conn);
+		
+		return list;
+	}  // selectProduct 메소드 영역 끝
+	*/
+
+	
+	/**
+	 * 제품 상세 정보 조회용 서비스 메소드 (상품 정보들)
+	 * @param productNo => 상세조회할 제품 번호
+	 * @return => 조회된 제품 상세 정보 한 건 중 정보들
+	 */
+	public ProductInfo selectProductInfo(int productNo) {
+		
+		Connection conn = getConnection();
+		
+		ProductInfo p = new ProductInfoDao().selectProductInfo(conn, productNo);
+		
+		// select문이므로 트랜잭션 처리는 패스
+		
+		close(conn);
+		
+		return p;
+		
+	}  // selectProductInfo 메소드 영역 끝
+	
+	
+	/**
+	 * 제품 상세 정보 조회용 서비스 메소드(상품 이미지들)
+	 * @param productNo => 상세 조회할 제품 번호
+	 * @return => 조회된 상품 상세 정보 한 건 중 이미지들
+	 */
+	public ArrayList<ProductImage> selectProductImage(int productNo) {
+		
+		Connection conn = getConnection();
+		
+		ArrayList<ProductImage> list = new ProductInfoDao().selectProductImage(conn, productNo);
+		
+		close(conn);
+		
+		return list;
+		
+	}  // selectProductImage 메소드 영역 끝
+
+
+
+	/**
+	 * 상품 등록 서비스 메소드
+	 * @param p => 작성할 제품 정보 내용
+	 * @param list => 등록하고자하는 제품 이미지들
+	 * @return => 처리된 행의 갯수
+	 */
+	public int productInsert(ProductInfo p, ArrayList<ProductImage> list) {
+		
+		Connection conn = getConnection();
+		
+		// ProductInfo 테이블에 insert 요청
+		int result1 = new ProductInfoDao().productInsert(conn,p);
+		
+		// ProductImage 테이블에 insert 요청
+		int result2 = new ProductInfoDao().productInsert(conn, list);
+		
+		
+		if(result1>0 && result2>0) {
+			commit(conn);
+		}else {
+			rollback(conn);
+		}
+		
+		close(conn);
+		
+		return result1*result2;
+		
+		
+	}  // productInsert 메소드 영역 끝
+
+
+	
+	/**
+	 * 총 상품 갯수 조회용 서비스 메소드 
+	 * @return => 상품의 총 갯수
+	 */
+	public int selectProductCount() {
+		
+		Connection conn = getConnection();
+		
+		int listCount = new ProductInfoDao().selectListCount(conn);
+		
+		close(conn);
+		
+		return listCount;
+	}
+	
+
+	/**
+	 * 상품 목록 조회용 쿼리문 메소드
+	 * @param pi => 구간별로 끊어서 조회할 때 필요한 변수
+	 * @return  => 조회된 상품들
+	 */
+	public ArrayList<ProductInfo> selectList(PageInfo pi) {
+		
+		Connection conn = getConnection();
+		
+		ArrayList<ProductInfo> list = new ProductInfoDao().selectList(conn, pi);
+		
+		// select문이므로 트랜잭션 과정을 패스
+		
+		close(conn);
+		
+		return list;
+		
+		
+	}  // selectList 메소드 영역 끝
+
+
+	public int updateProduct(ProductInfo p, ArrayList<ProductImage> pImg) {
+		
+	    Connection conn = getConnection();
+	    
+	    // 1. ProductInfo 테이블 업데이트
+	    int result1 = new ProductInfoDao().updateProductInfo(conn, p);
+
+	    // 2. ProductImage 테이블 업데이트 처리
+	    int result2 = 1;  // 파일이 없을 경우에도 기본값을 1로 설정하여 결과 곱셈이 실패하지 않도록 함
+
+	    for (ProductImage p : pImg) {
+	        
+	        // 기존 파일이 있는 경우 (fileNo가 있는 경우)
+	        if (pImg.getImageNo() != 0) {
+	            // 해당 이미지를 업데이트
+	            result2 *= new ProductInfoDao().updateProductImage(conn, pImg);
+	        } else {
+	            // 기존 파일이 없는 경우 새 첨부 파일을 삽입
+	            result2 *= new ProductInfoDao().insertNewProductImage(conn, pImg);
+	        }
+	    }
+
+	    // 3. 트랜잭션 처리
+	    if (result1 > 0 && result2 > 0) {
+	        commit(conn);
+	    } else {
+	        rollback(conn);
+	    }
+
+	    // 4. 연결 종료
+	    close(conn);
+
+	    // 5. 결과 반환
+	    return result1 * result2;
+		
+	}
+
+
+
+	
+
+
+
+	
+
+}

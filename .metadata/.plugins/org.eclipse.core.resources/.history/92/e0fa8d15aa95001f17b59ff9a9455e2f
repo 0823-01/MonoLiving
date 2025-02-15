@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+	<!-- 상품 전체 갯수 조회용 쿼리문 -->
+	<entry key="selectListCount">
+		SELECT COUNT(*) AS COUNT
+		FROM PRODUCT_INFO
+	</entry>
+	
+	<!-- 상품 목록 조회용 쿼리문 -->
+	<entry key="selectList">
+    SELECT *
+    FROM (
+        SELECT ROWNUM RNUM, A.*
+        FROM (
+            SELECT 
+            	P.PRODUCT_NO,
+                p.PRODUCT_NAME,
+                p.PRICE,
+                i.IMAGE_URL || i.IMG_SAVE_FILE AS "TITLEIMG"
+            FROM 
+                PRODUCT_INFO p
+            JOIN 
+                PRODUCT_IMAGE i ON p.PRODUCT_NO = i.REF_PNO
+            WHERE 
+                i.THUMBNAIL = 'Y'
+            ORDER BY 
+                p.PRODUCT_NO DESC  -- 원하는 정렬 기준으로 변경 가능
+        ) A
+    )
+    WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	
+	<!-- 상품 상세조회용 쿼리문 -->
+	<entry key="selectProduct">
+		SELECT 
+	        PRODUCT_NO,
+	        PRODUCT_NAME,
+	        CATEGORY_NAME,
+	        PRICE,
+	        PRICE * (1 - DISCOUNT / 100) AS DISCOUNT_PRICE,  -- 할인판매가 계산
+	        PRODUCT_DESCRIPTION,
+	        PRODUCT_SIZE,
+	        MATERIAL,
+	        COLOR,
+	        ASSEMBLY_YN,
+	        DISCOUNT,
+	        COUNTRY
+	    FROM 
+	        PRODUCT_INFO
+	    JOIN 
+	        CATEGORY USING (CATEGORY_NO)
+	    WHERE 
+	        PRODUCT_NO = ?
+	</entry>
+	
+	
+	
+	<!-- 상품 첨부파일 조회용 쿼리문 -->
+	<entry key="selectProductImg">
+		SELECT IMAGE_NO
+             , IMG_ORIGINAL_FILE
+             , IMG_SAVE_FILE
+             , IMAGE_URL
+		FROM PRODUCT_IMAGE
+		WHERE REF_PNO = ?
+	</entry>
+	
+	
+	
+	<!-- 카테고리별 침대 상품 목록 조회용 쿼리문 -->
+	<entry key="selectBedList">
+		SELECT p.PRODUCT_NO,
+               p.PRODUCT_NAME,
+               p.PRICE,
+               i.IMAGE_URL || i.IMG_SAVE_FILE AS "TITLEIMG"
+		FROM PRODUCT_INFO p
+		JOIN PRODUCT_IMAGE i ON (p.PRODUCT_NO = i.REF_PNO)
+		WHERE CATEGORY_NO = 1
+		AND THUMBNAIL = 'Y'
+	</entry>
+	
+		<!-- 카테고리별 테이블 상품 목록 조회용 쿼리문 -->
+	<entry key="selectTableList">
+		SELECT p.PRODUCT_NO,
+               p.PRODUCT_NAME,
+               p.PRICE,
+               i.IMAGE_URL || i.IMG_SAVE_FILE AS "TITLEIMG"
+		FROM PRODUCT_INFO p
+		JOIN PRODUCT_IMAGE i ON (p.PRODUCT_NO = i.REF_PNO)
+		WHERE CATEGORY_NO = 2
+		AND THUMBNAIL = 'Y'
+	</entry>
+	
+		<!-- 카테고리별 수납장 상품 목록 조회용 쿼리문 -->
+	<entry key="selectCabinetList">
+		SELECT p.PRODUCT_NO,
+               p.PRODUCT_NAME,
+               p.PRICE,
+               i.IMAGE_URL || i.IMG_SAVE_FILE AS "TITLEIMG"
+		FROM PRODUCT_INFO p
+		JOIN PRODUCT_IMAGE i ON (p.PRODUCT_NO = i.REF_PNO)
+		WHERE CATEGORY_NO = 3
+		AND THUMBNAIL = 'Y'
+	</entry>
+	
+		<!-- 카테고리별 진열장.책장 상품 목록 조회용 쿼리문 -->
+	<entry key="selectShowcaseList">
+		SELECT p.PRODUCT_NO,
+               p.PRODUCT_NAME,
+               p.PRICE,
+               i.IMAGE_URL || i.IMG_SAVE_FILE AS "TITLEIMG"
+		FROM PRODUCT_INFO p
+		JOIN PRODUCT_IMAGE i ON (p.PRODUCT_NO = i.REF_PNO)
+		WHERE CATEGORY_NO = 4
+		AND THUMBNAIL = 'Y'
+	</entry>
+	
+	
+	<!-- 카테고리별 의자 상품 목록 조회용 쿼리문 -->
+	<entry key="selectChairList">
+		SELECT p.PRODUCT_NO,
+               p.PRODUCT_NAME,
+               p.PRICE,
+               i.IMAGE_URL || i.IMG_SAVE_FILE AS "TITLEIMG"
+		FROM PRODUCT_INFO p
+		JOIN PRODUCT_IMAGE i ON (p.PRODUCT_NO = i.REF_PNO)
+		WHERE CATEGORY_NO = 5
+		AND THUMBNAIL = 'Y'
+	</entry>
+	
+	<!-- 카테고리별 옷장 상품 목록 조회용 쿼리문 -->
+	<entry key="selectClosetList">
+		SELECT p.PRODUCT_NO,
+               p.PRODUCT_NAME,
+               p.PRICE,
+               i.IMAGE_URL || i.IMG_SAVE_FILE AS "TITLEIMG"
+		FROM PRODUCT_INFO p
+		JOIN PRODUCT_IMAGE i ON (p.PRODUCT_NO = i.REF_PNO)
+		WHERE CATEGORY_NO = 6
+		AND THUMBNAIL = 'Y'
+	</entry>
+	
+	
+	
+	<!-- 낮은가격순 상품 정렬 쿼리문 -->
+	<entry key="selectPriceListDesc">
+		SELECT p.PRODUCT_NO,
+               p.PRODUCT_NAME,
+               p.PRICE, 
+			   i.IMAGE_URL || i.IMG_SAVE_FILE AS "TITLEIMG" 
+	    FROM PRODUCT_INFO p
+	    JOIN PRODUCT_IMAGE i ON (p.PRODUCT_NO = i.REF_PNO)
+	    WHERE i.THUMBNAIL = 'Y'
+	    ORDER BY PRICE ASC
+	    
+	</entry>
+	
+	
+	
+	<!-- 상품 검색 조회용 쿼리문 -->
+	<entry key="">      
+		SELECT P.PRODUCT_NO,
+		       P.PRODUCT_NAME,
+		       P.PRICE,
+		       I.IMAGE_URL || I.IMG_SAVE_FILE AS "TITLEIMG"
+		FROM PRODUCT_INFO P
+		JOIN PRODUCT_IMAGE I ON (P.PRODUCT_NO = I.REF_PNO)
+		WHERE I.THUMBNAIL = 'Y'
+		 AND P.PRODUCT_NAME LIKE '%' || ? || '%'
+	</entry>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+</properties>

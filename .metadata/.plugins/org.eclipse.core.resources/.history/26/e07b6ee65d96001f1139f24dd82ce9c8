@@ -1,0 +1,132 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.io.*, java.net.HttpURLConnection, java.net.URL, java.sql.*, com.kh.common.JDBCTemplate" %>
+<%@ page import="org.json.simple.JSONObject" %>
+<%@ page import="org.json.simple.parser.JSONParser" %>
+
+<%
+    String priceStr = request.getParameter("price");
+    int price = 0;
+
+    try {
+        price = Integer.parseInt(priceStr);
+        System.out.println("전송된 가격: " + price);
+    } catch (NumberFormatException e) {
+        response.getWriter().println("가격이 유효하지 않습니다: " + priceStr);
+        return;
+    }
+
+    String partnerUserIdStr = (String) session.getAttribute("partner_user_id");
+    int partnerUserId = 0;
+    
+    if (partnerUserIdStr == null) {
+        partnerUserIdStr = "12345"; // 기본 회원 ID 설정
+        session.setAttribute("partner_user_id", partnerUserIdStr);
+    }
+    try {
+        partnerUserId = Integer.parseInt(partnerUserIdStr);
+    } catch (NumberFormatException e) {
+        response.getWriter().println("유효하지 않은 사용자 ID입니다.");
+        return;
+    }
+
+    String apiUrl = "https://kapi.kakao.com/v1/payment/ready";
+    String adminKey = "3cf90ec67e8e09bae787a5b2e11a21f0";
+
+    HttpURLConnection conn = null;
+    PreparedStatement pstmt = null;
+    Connection connDB = null;
+
+    try {
+        URL url = new URL(apiUrl);
+        conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization", "KakaoAK " + adminKey);
+        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+
+        String params = "cid=TC0ONETIME" +
+                        "&partner_order_id=order_id_1234" +
+                        "&partner_user_id=" + partnerUserIdStr +
+                        "&item_name=Sample Item" +
+                        "&quantity=1" +
+                        "&total_amount=" + price +
+                        "&vat_amount=0" +
+                        "&tax_free_amount=0" +
+                        "&approval_url=http://localhost:8090/mall/views/api/kakaoPaySuccess.jsp" +
+                        "&fail_url=http://localhost:8090/mall/views/api/kakaoPayFail.jsp" +
+                        "&cancel_url=http://localhost:8090/mall/views/api/kakaoPayCancel.jsp";
+
+        conn.setDoOutput(true);
+        try (DataOutputStream dos = new DataOutputStream(conn.getOutputStream())) {
+            dos.writeBytes(params);
+            dos.flush();
+        }
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            InputStream is = conn.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+            br.close();
+
+            JSONParser parser = new JSONParser();
+            JSONObject responseJson = (JSONObject) parser.parse(sb.toString());
+            String tid = (String) responseJson.get("tid");
+            String nextRedirectUrl = (String) responseJson.get("next_redirect_pc_url");
+
+            if (tid != null && nextRedirectUrl != null) {
+                session.setAttribute("tid", tid);
+
+                connDB = JDBCTemplate.getConnection();
+                String insertOrderSql = "INSERT INTO orders (ORDER_NO, TOTAL_PRICE, RECIPIENT, ADDRESS, PHONE, STATUS, RES_REQUIREMENT, PAY_CODE, ORDER_ENFORLL, REFUND_DATE, USER_ID) " +
+                        "VALUES (orders_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, SYSDATE, NULL, ?)"; // USER_NO를 USER_ID로 수정
+
+                String payCode = "some_pay_code";
+
+                pstmt = connDB.prepareStatement(insertOrderSql);
+
+                pstmt.setInt(1, price);                   // TOTAL_PRICE
+                pstmt.setString(2, "수령인 이름");         // RECIPIENT
+                pstmt.setString(3, "주소");                // ADDRESS
+                pstmt.setString(4, "전화번호");            // PHONE
+                pstmt.setString(5, "1");                  // STATUS
+                pstmt.setString(6, "요청사항");            // RES_REQUIREMENT
+                pstmt.setString(7, payCode);              // PAY_CODE
+                pstmt.setInt(8, partnerUserId);           // USER_ID로 수정
+                pstmt.executeUpdate();
+                JDBCTemplate.commit(connDB);
+
+                response.sendRedirect(nextRedirectUrl);
+            } else {
+                response.getWriter().println("결제 준비에 실패했습니다. TID 또는 리다이렉트 URL이 null입니다.");
+                response.getWriter().println("응답 내용: " + sb.toString());
+            }
+        } else {
+            InputStream errorStream = conn.getErrorStream();
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(errorStream, "UTF-8"));
+            StringBuilder errorResponse = new StringBuilder();
+            String errorLine;
+            while ((errorLine = errorReader.readLine()) != null) {
+                errorResponse.append(errorLine);
+            }
+            errorReader.close();
+
+            response.getWriter().println("결제 준비 중 오류가 발생했습니다. 응답 코드: " + responseCode);
+            response.getWriter().println("응답 내용: " + errorResponse.toString());
+        }
+    } catch (Exception e) {
+        response.getWriter().println("오류 발생: " + e.getMessage());
+        e.printStackTrace(response.getWriter());
+    } finally {
+        try {
+            if (pstmt != null) pstmt.close();
+            if (connDB != null) JDBCTemplate.close(connDB);
+            if (conn != null) conn.disconnect();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+%>
