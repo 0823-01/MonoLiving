@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 import com.kh.member.model.service.MemberService;
 import com.kh.member.model.vo.Member;
 
-@WebServlet("/update.me")
+@WebServlet("/updateMyPage.me")
 public class MemberUpdateController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
