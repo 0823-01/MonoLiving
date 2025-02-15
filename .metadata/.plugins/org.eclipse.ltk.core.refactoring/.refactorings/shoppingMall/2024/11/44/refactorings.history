@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Rename resource &apos;shoppingMall/src/main/java/com/kh/member/model/dao/MemberDao (1).java&apos; to &apos;MemberDao.java&apos;" description="Rename resource &apos;MemberDao (1).java&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/main/java/com/kh/member/model/dao/MemberDao (1).java" name="MemberDao.java" stamp="1730433086886" updateReferences="true"/>
-</session>

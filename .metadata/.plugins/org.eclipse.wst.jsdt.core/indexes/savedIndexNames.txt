@@ -1,9 +1,0 @@
-INDEX VERSION 1.4+C:\MonoLiving\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
-4085056935.index
-786940583.index
-2447394772.index
-3225438905.index
-29566158.index
-2109653725.index
-1839300394.index
-296003490.index

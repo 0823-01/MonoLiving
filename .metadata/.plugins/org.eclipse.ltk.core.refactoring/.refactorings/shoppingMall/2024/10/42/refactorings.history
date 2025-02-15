@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Rename resource &apos;shoppingMall/src/main/webapp/views/common/headerFooter.jsp&apos; to &apos;header.jsp&apos;" description="Rename resource &apos;headerFooter.jsp&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/main/webapp/views/common/headerFooter.jsp" name="header.jsp" stamp="1729151290291" updateReferences="true"/>
-</session>
