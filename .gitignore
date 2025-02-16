@@ -23,3 +23,8 @@
 hs_err_pid*
 replay_pid*
 /.metadata/
+
+shoppingMall/src/main/java/sql/driver/driver.properties
+adminMall/src/main/java/sql/driver/driver.properties
+shoppingMall/src/main/webapp/WEB-INF/classes/sql/driver/driver.properties
+adminMall/src/main/webapp/WEB-INF/classes/sql/driver/driver.properties
