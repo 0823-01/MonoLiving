@@ -227,7 +227,7 @@
 		    
 		    $.ajax({
 		        type: "POST",
-		        url: "<%= contextPath %>/cart/add", // 장바구니 추가 서블릿 URL
+		        url: "<%= contextPath %>/add.ct", // 장바구니 추가 서블릿 URL
 		        data: {
 		            userNo: userNo,
 		            productNo: productNo,

@@ -4,33 +4,27 @@ public class Cart {
 
 	// 필드부
 	private int cartNo;
-    private int productQuantity;
-    private int totalPrice;
-    private int userNo;
-    private int productNo;
-    private String productName;
-    private int price;
-    private int discount;
-    private int discountPrice;
-    private int totalDiscountPrice;
+	private int productQuantity;
+	private int userNo;
+	private int productNo;
+	private String productName;
+    private int originalPrice;         // 원래 가격
+    private int discountedPrice;       // 할인된 가격
     private String titleImg;
 	
 	// 생성자부
 	public Cart() {}
 
-	public Cart(int cartNo, int productQuantity, int totalPrice, int userNo, int productNo, String productName,
-			int price, int discount, int discountPrice, int totalDiscountPrice, String titleImg) {
+	public Cart(int cartNo, int productQuantity, int userNo, int productNo, String productName, int originalPrice,
+			int discountedPrice, String titleImg) {
 		super();
 		this.cartNo = cartNo;
 		this.productQuantity = productQuantity;
-		this.totalPrice = totalPrice;
 		this.userNo = userNo;
 		this.productNo = productNo;
 		this.productName = productName;
-		this.price = price;
-		this.discount = discount;
-		this.discountPrice = discountPrice;
-		this.totalDiscountPrice = totalDiscountPrice;
+		this.originalPrice = originalPrice;
+		this.discountedPrice = discountedPrice;
 		this.titleImg = titleImg;
 	}
 
@@ -48,14 +42,6 @@ public class Cart {
 
 	public void setProductQuantity(int productQuantity) {
 		this.productQuantity = productQuantity;
-	}
-
-	public int getTotalPrice() {
-		return totalPrice;
-	}
-
-	public void setTotalPrice(int totalPrice) {
-		this.totalPrice = totalPrice;
 	}
 
 	public int getUserNo() {
@@ -82,36 +68,20 @@ public class Cart {
 		this.productName = productName;
 	}
 
-	public int getPrice() {
-		return price;
+	public int getOriginalPrice() {
+		return originalPrice;
 	}
 
-	public void setPrice(int price) {
-		this.price = price;
+	public void setOriginalPrice(int originalPrice) {
+		this.originalPrice = originalPrice;
 	}
 
-	public int getDiscount() {
-		return discount;
+	public int getDiscountedPrice() {
+		return discountedPrice;
 	}
 
-	public void setDiscount(int discount) {
-		this.discount = discount;
-	}
-
-	public int getDiscountPrice() {
-		return discountPrice;
-	}
-
-	public void setDiscountPrice(int discountPrice) {
-		this.discountPrice = discountPrice;
-	}
-
-	public int getTotalDiscountPrice() {
-		return totalDiscountPrice;
-	}
-
-	public void setTotalDiscountPrice(int totalDiscountPrice) {
-		this.totalDiscountPrice = totalDiscountPrice;
+	public void setDiscountedPrice(int discountedPrice) {
+		this.discountedPrice = discountedPrice;
 	}
 
 	public String getTitleImg() {
@@ -124,10 +94,9 @@ public class Cart {
 
 	@Override
 	public String toString() {
-		return "Cart [cartNo=" + cartNo + ", productQuantity=" + productQuantity + ", totalPrice=" + totalPrice
-				+ ", userNo=" + userNo + ", productNo=" + productNo + ", productName=" + productName + ", price="
-				+ price + ", discount=" + discount + ", discountPrice=" + discountPrice + ", totalDiscountPrice="
-				+ totalDiscountPrice + ", titleImg=" + titleImg + "]";
+		return "Cart [cartNo=" + cartNo + ", productQuantity=" + productQuantity + ", userNo=" + userNo + ", productNo="
+				+ productNo + ", productName=" + productName + ", originalPrice=" + originalPrice + ", discountedPrice="
+				+ discountedPrice + ", titleImg=" + titleImg + "]";
 	}
-
+	
 }

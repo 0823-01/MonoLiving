@@ -12,10 +12,19 @@ import javax.servlet.http.HttpServletResponse;
 import com.kh.cart.model.service.CartService;
 
 /**
- * Servlet implementation class CartAddServlet
+ * Servlet implementation class CartAddController
  */
-@WebServlet("/cart/add")
-public class CartAddServlet extends HttpServlet {
+@WebServlet("/add.ct")
+public class CartAddController extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+    
+    public CartAddController() {
+        super();
+    }
+
+    /**
+     * 장바구니에 상품 추가 요청 처리
+     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int userNo = Integer.parseInt(request.getParameter("userNo")); // 사용자 번호
         int productNo = Integer.parseInt(request.getParameter("productNo")); // 상품 번호
