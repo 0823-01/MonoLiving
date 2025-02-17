@@ -15,6 +15,7 @@
             margin: 0;
             padding: 20px;
         }
+        /*
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -23,6 +24,13 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
+        */
+        
+         .container {
+	        width: 100%;
+	        margin: 0 auto;
+	        padding: 20px;
+	    }
         h1 {
             text-align: center;
             color: #333;
@@ -51,71 +59,83 @@
             border: 1px solid #ccc;
         }
     </style>
-    <script>
-        function updateStatus(orderId, status) {
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "updateOrderStatus.me", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    alert("배송 상태가 업데이트되었습니다.");
-                }
-            };
-            xhr.send("orderId=" + orderId + "&status=" + status);
-        }
-    </script>
 </head>
 <body>
-    <div class="container">
-        <h1>주문 관리</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>주문 ID</th>
-                    <th>상품명</th>
-                    <th>수령인</th>
-                    <th>주소</th>
-                    <th>전화번호</th>
-                    <th>주문금액</th>
-                    <th>배송 상태</th>
-                    <th>요청사항</th>
-                    <th>결제코드</th>
-                    <th>환불 날짜</th>
-                    <th>회원 ID</th>
-                    <th>결제 날짜</th>
-                </tr>
-            </thead>
-            <tbody>
-                <%
-                    OrderService orderService = new OrderService();
-                    ArrayList<Order> orderList = orderService.getAllOrders();
 
-                    for (Order order : orderList) {
-                %>
-                <tr>
-                    <td><%= order.getOrderNo() %></td>
-                    <td><%= order.getProductName() %></td>
-                    <td><%= order.getRecipient() %></td>
-                    <td><%= order.getAddress() %></td>
-                    <td><%= order.getPhone() %></td>
-                    <td><%= order.getTotalPrice() %> 원</td>
-                    <td>
-                        <select class="status-select" onchange="updateStatus(<%= order.getOrderNo() %>, this.value)">
-                            <option value="1" <%= order.getStatus() == 1 ? "selected" : "" %>>배송중</option>
-                            <option value="2" <%= order.getStatus() == 2 ? "selected" : "" %>>배송완료</option>
-                        </select>
-                    </td>
-                    <td><%= order.getResRequirement() %></td>
-                    <td><%= order.getPayCode() %></td>
-                    <td><%= order.getRefundDate() != null ? order.getRefundDate() : "없음" %></td>
-                    <td><%= order.getUserId() %></td>
-                    <td><%= order.getOrderEnroll() != null ? order.getOrderEnroll() : "없음" %></td> <!-- 결제 날짜 추가 -->
-                </tr>
-                <%
-                    }
-                %>
-            </tbody>
-        </table>
-    </div>
+	<%@ include file="../common/nav.jsp" %>
+
+
+	<div id="layoutSidenav_content">
+       <main>
+			        
+	            <div class="container">
+	                <h1>주문 관리</h1>
+	                <table>
+	                    <thead>
+	                        <tr>
+	                            <th width="80">주문 ID</th>
+	                            <th width="100">상품명</th>
+	                            <th width="90">수령인</th>
+	                            <th width="110">주소</th>
+	                            <th>전화번호</th>
+	                            <th width="100">주문금액</th>
+	                            <th>배송 상태</th>
+	                            <th width="100">요청사항</th>
+	                            <th>결제코드</th>
+	                    <!--    <th>환불 날짜</th> -->
+	                            <th>회원 ID</th>
+	                            <th width="120">결제 날짜</th>
+	                        </tr>
+	                    </thead>
+	                    <tbody>
+	                        <%
+	                            OrderService orderService = new OrderService();
+	                            ArrayList<Order> orderList = orderService.getAllOrders();
+	
+	                            for (Order order : orderList) {
+	                        %>
+	                        <tr>
+	                            <td><%= order.getOrderNo() %></td>
+	                            <td><%= order.getProductName().length() <= 5 ?
+	                            		order.getProductName() : 
+	                            		order.getProductName().substring(0, 4) + "..." %></td>
+	                            <td><%= order.getRecipient() %></td>
+	                            
+	                            
+	                            <td><%= order.getAddress().length() <= 6 ?
+	                            		order.getAddress() : 
+	                            		order.getAddress().substring(0,5) + "..." %></td>
+	                            
+	                            
+	                            
+	                            <td><%= order.getPhone() %></td>
+	                            <td><%= order.getTotalPrice() %> 원</td>
+	                            <td>
+	                               <form action="<%= request.getContextPath() %>/updateOrderStatus.me" method="post">
+	                                   <input type="hidden" name="orderId" value="<%= order.getOrderNo() %>">
+	                                   <select class="status-select" name="status">
+	                                       <option value="1" <%= order.getStatus() == 1 ? "selected" : "" %>>배송중</option>
+	                                       <option value="2" <%= order.getStatus() == 2 ? "selected" : "" %>>배송완료</option>
+	                                   </select>
+	                                   <button type="submit">저장</button>
+	                               </form>
+	                            </td>
+                     
+	                            <td><%= (order.getResRequirement() != null && order.getResRequirement().length() <= 3) ? 
+						            order.getResRequirement() 
+						            : (order.getResRequirement() != null ? order.getResRequirement().substring(0, 2) + "..." : "") %></td>
+	                            <td><%= order.getPayCode() %></td>
+	                         <!-- <td><%= order.getRefundDate() != null ? order.getRefundDate() : "없음" %></td>  --> 
+	                            <td><%= order.getUserId() %></td>
+	                            <td><%= order.getOrderEnroll() != null ? order.getOrderEnroll() : "없음" %></td>
+	                        </tr>
+	                        <%
+	                            }
+	                        %>
+	                    </tbody>
+	                </table>
+	            </div>	        
+	    </main>
+	  </div>
 </body>
 </html>

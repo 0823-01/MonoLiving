@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <style>
 
     * {
@@ -154,23 +154,29 @@
 			    <div class="button-container">
 			    
 			    	<div class="button-noticeList">
-			        <a href="javascript:history.back();" class="back-button">목록으로</a>
+			        <a href="<%= contextPath %>/list.no" class="back-button">목록으로</a>
 				    </div>
 				    
-				    <!-- 추후에 관리자만 보여지도록 변경 -->
 				    <div class="button-noticeList">
 				        <a href="<%= contextPath %>/updateForm.no?nno=<%= n.getNoticeNo() %>" class="back-button">수정하기</a>
 				    </div>
 				    <div class="button-noticeList">
-				        <a href="<%= contextPath %>/delete.no?nno=<%= n.getNoticeNo() %>" class="back-button">삭제하기</a>
-				    </div>
+					    <a href="javascript:void(0);" class="back-button" onclick="confirmDelete('<%= contextPath %>/delete.no?nno=<%= n.getNoticeNo() %>')">삭제하기</a>
+					</div>
 				    
 			    </div>
 			</div>
 		</main>
 	</div>
 	
+	<script>
 	
-
+	    function confirmDelete(url) {
+	        if (confirm("해당 공지사항을 삭제하시겠습니까?")) {
+	            location.href = url;
+	        }
+	    }
+	    
+	</script>
 </body>
 </html>

@@ -138,7 +138,7 @@
 	    </div>
 	    
 	    <% if(n.getNoticeFilePath() != null) { %>
-	    	<a class="fileDown" download="<%= n.getNoticeFileName() %>" href="<%= contextPath %>/<%= n.getNoticeFilePath() + n.getNoticeUpdateFile() %>">	
+	    	<a class="fileDown" download="<%= n.getNoticeFileName() %>" href="/admin/<%= n.getNoticeFilePath() + n.getNoticeUpdateFile() %>">	
 		    	<div class="attachment">
 		            <p class="filename"><%= n.getNoticeFileName() %></p>
 		            <p class="filebyte">
@@ -149,22 +149,10 @@
 	    <% } %>
 	    
 	    <div class="button-container">
-	    
 	    	<div class="button-noticeList">
 	        <a href="<%= contextPath %>/list.no" class="back-button">목록으로</a>
 		    </div>
-		    
-		    <!-- 추후에 관리자만 보여지도록 변경 
-		    <div class="button-noticeList">
-		        <a href="<%= contextPath %>/updateForm.no?nno=<%= n.getNoticeNo() %>" class="back-button">수정하기</a>
-		    </div>
-		    <div class="button-noticeList">
-		        <a href="<%= contextPath %>/delete.no?nno=<%= n.getNoticeNo() %>" class="back-button">삭제하기</a>
-		    </div>
-		    -->
 	    </div>
-	    
-	    
 	</div>
 	
 	<%@ include file="../common/footer.jsp" %>

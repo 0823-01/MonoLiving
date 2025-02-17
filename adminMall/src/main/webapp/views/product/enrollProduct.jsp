@@ -52,15 +52,15 @@
 		            </div>
 		            <div class="mb-3">
 		                <label for="productSize" class="form-label">상품 사이즈  (가로 x 세로 x 높이):</label>
-		                <input type="text" id="productSize" name="productSize" class="form-control">
+		                <input type="text" id="productSize" name="productSize" class="form-control" required>
 		            </div>
 		            <div class="mb-3">
 		                <label for="material" class="form-label">재질:</label>
-		                <input type="text" id="material" name="material" class="form-control">
+		                <input type="text" id="material" name="material" class="form-control" required>
 		            </div>
 		            <div class="mb-3">
 		                <label for="color" class="form-label">색상:</label>
-		                <input type="text" id="color" name="color" class="form-control">
+		                <input type="text" id="color" name="color" class="form-control" required>
 		            </div>
 		            <div class="mb-3">
 		                <label for="assemblyYN" class="form-label">조립 여부:</label>
@@ -71,7 +71,7 @@
 		            </div>
 		            <div class="mb-3">
 		                <label for="discount" class="form-label">할인율 (%):</label>
-		                <input type="number" id="discount" name="discount" class="form-control" min="0" max="100" step="1">
+		                <input type="number" id="discount" name="discount" class="form-control" min="0" max="100" step="1" required>
 		            </div>
 					<div class="mb-3">
 						<label for="country" class="form-label">제조국 : </label>

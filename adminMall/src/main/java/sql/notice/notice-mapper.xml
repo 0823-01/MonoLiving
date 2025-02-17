@@ -70,16 +70,17 @@
 	
 	<!-- 공지사항 수정용 쿼리문 -->
 	<entry key="updateNotice">
-		UPDATE NOTICE
-		   SET NOTICE_TITLE = ?
-		     , NOTICE_CONTENT = ?
-		     , NOTICE_FILE_NAME = ?
-		     , NOTICE_UPDATE_FILE = ?
-		     , NOTICE_FILE_SIZE = ?
-		     , NOTICE_FILE_PATH = ?
-		 WHERE NOTICE_NO = ?
-		   AND NOTICE_DELETE_YN = 'N'
+	    UPDATE NOTICE
+	       SET NOTICE_TITLE = ?,
+	           NOTICE_CONTENT = ?,
+	           NOTICE_FILE_NAME = CASE WHEN ? IS NULL THEN NULL ELSE ? END,
+	           NOTICE_UPDATE_FILE = CASE WHEN ? IS NULL THEN NULL ELSE ? END,
+	           NOTICE_FILE_SIZE = CASE WHEN ? = 0 THEN NULL ELSE ? END,
+	           NOTICE_FILE_PATH = CASE WHEN ? IS NULL THEN NULL ELSE ? END
+	     WHERE NOTICE_NO = ?
+	       AND NOTICE_DELETE_YN = 'N'
 	</entry>
+
 	
 	<!-- 공지사항 삭제용 쿼리문 -->
 	<entry key="deleteNotice">

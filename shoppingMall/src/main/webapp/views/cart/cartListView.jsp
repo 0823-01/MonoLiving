@@ -274,7 +274,7 @@
 		                <button class="delete-btn" onclick="deleteCartItem(<%= c.getCartNo() %>)">삭제</button>
 		            </div>
 		            <div class="product-info">
-		                <img src="<%= contextPath %>/<%= c.getTitleImg() %>" alt="상품 이미지" class="product-image">
+		                <img src="/admin/<%= c.getTitleImg() %>" alt="상품 이미지" class="product-image">
 		                <div class="product-details">
 		                    <h2><%= c.getProductName() %></h2>
 		                    <div class="quantity-control">

@@ -244,12 +244,20 @@ public class NoticeDao {
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, n.getNoticeTitle());
-	        pstmt.setString(2, n.getNoticeContent());
-	        pstmt.setString(3, n.getNoticeFileName());
-	        pstmt.setString(4, n.getNoticeUpdateFile());
-	        pstmt.setInt(5, n.getNoticeFileSize());
-	        pstmt.setString(6, n.getNoticeFilePath());
-	        pstmt.setInt(7, n.getNoticeNo());
+			pstmt.setString(2, n.getNoticeContent());
+
+			// 파일 정보가 NULL이면 null 바인딩, 그렇지 않으면 값 바인딩
+			pstmt.setString(3, n.getNoticeFileName() != null ? n.getNoticeFileName() : null);
+			pstmt.setString(4, n.getNoticeFileName());
+			pstmt.setString(5, n.getNoticeUpdateFile() != null ? n.getNoticeUpdateFile() : null);
+			pstmt.setString(6, n.getNoticeUpdateFile());
+			pstmt.setInt(7, n.getNoticeFileSize());
+			pstmt.setInt(8, n.getNoticeFileSize() != 0 ? n.getNoticeFileSize() : 0);
+			pstmt.setString(9, n.getNoticeFilePath() != null ? n.getNoticeFilePath() : null);
+			pstmt.setString(10, n.getNoticeFilePath());
+
+			// WHERE 절
+			pstmt.setInt(11, n.getNoticeNo());
 			
 			result = pstmt.executeUpdate();
 			

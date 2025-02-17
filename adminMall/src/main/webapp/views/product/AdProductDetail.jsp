@@ -92,8 +92,6 @@ th {
 	<div id="layoutSidenav_content">
        <main>
 	
-	<div id="layoutSidenav_content">
-		<main>
 			<div class="container">
 			<!-- <br><br><br> -->
 				<h1>상품 상세 정보</h1>

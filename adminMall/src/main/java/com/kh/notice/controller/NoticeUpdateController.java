@@ -25,25 +25,25 @@ public class NoticeUpdateController extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         if (ServletFileUpload.isMultipartContent(request)) {
-        	
             int maxSize = 10 * 1024 * 1024;
             String savePath = request.getServletContext().getRealPath("/resources/notice_file/");
+
             MultipartRequest multiRequest
-            	= new MultipartRequest(request, savePath, maxSize, "UTF-8", new MonoFileRenamePolicy());
+                = new MultipartRequest(request, savePath, maxSize, "UTF-8", new MonoFileRenamePolicy());
 
             int noticeNo = Integer.parseInt(multiRequest.getParameter("nno"));
             String noticeTitle = multiRequest.getParameter("noticeTitle");
             String noticeContent = multiRequest.getParameter("noticeContent");
+            boolean deleteFile = Boolean.parseBoolean(multiRequest.getParameter("deleteFile")); // 파일 삭제 여부
 
             Notice n = new Notice();
             n.setNoticeNo(noticeNo);
             n.setNoticeTitle(noticeTitle);
             n.setNoticeContent(noticeContent);
 
+            // 파일이 새로 업로드된 경우
             String key = "reUpfile";
             if (multiRequest.getOriginalFileName(key) != null) {
-            	
-                // 새 파일이 업로드된 경우
                 String originName = multiRequest.getOriginalFileName(key);
                 String changeName = multiRequest.getFilesystemName(key);
                 int newFileSize = (int) multiRequest.getFile(key).length();
@@ -53,19 +53,15 @@ public class NoticeUpdateController extends HttpServlet {
                 n.setNoticeFileSize(newFileSize);
                 n.setNoticeFilePath("/resources/notice_file/");
 
-                // 기존 파일이 있는 경우 삭제
-                String existingFile = multiRequest.getParameter("noticeUpdateFile");
-                
-                if (existingFile != null) {
-                	
-                    File oldFile = new File(savePath + existingFile);
-                    
-                    if (oldFile.exists()) oldFile.delete();
-                }
-                
+            } else if (deleteFile) {
+
+                // DB에서도 파일 정보 제거
+                n.setNoticeFileName(null);
+                n.setNoticeUpdateFile(null);
+                n.setNoticeFileSize(0);
+                n.setNoticeFilePath(null);
             } else {
-            	
-                // 새 파일이 없고 기존 파일 정보 유지
+                // 기존 파일 유지
                 Notice existingNotice = new NoticeService().selectNotice(noticeNo);
                 n.setNoticeFileName(existingNotice.getNoticeFileName());
                 n.setNoticeUpdateFile(existingNotice.getNoticeUpdateFile());
@@ -84,7 +80,6 @@ public class NoticeUpdateController extends HttpServlet {
             }
         }
     }
-
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);

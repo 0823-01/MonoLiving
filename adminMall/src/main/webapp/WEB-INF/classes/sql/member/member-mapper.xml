@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+
+	<!-- 전체 회원수 조회용 쿼리문 -->
+	<entry key="selectMemberCount">
+		SELECT COUNT(*) AS COUNT
+		FROM MEMBER
+	</entry>
+	
+	
+	<!-- 전체 회원 목록 조회용 쿼리문 -->
+	<entry key="selectMemberList">
+		SELECT *
+		    FROM (
+		        SELECT ROWNUM AS RNUM, USER_NO
+		                             , USER_ID
+		                             , EMAIL
+		                             , ENROLL_DATE
+		                             , STATUS
+		        FROM MEMBER
+		    ) 
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	
+	<!-- 회원 정보 상세보기 쿼리문 -->
+	<entry key="seelctMemberDetail">
+		SELECT USER_NO
+             , USER_ID
+             , USER_NAME
+             , GENDER
+             , USER_BIRTH
+             , EMAIL
+             , PHONE
+             , ADDRESS
+             , ENROLL_DATE
+		 FROM MEMBER
+		 WHERE USER_NO = ?
+	</entry>
+	
+	
+	<!-- 회원 삭제용 쿼리문 -->
+	<entry key="deleteMember">
+		UPDATE MEMBER
+		SET STATUS = 'N'
+		WHERE USER_NO = ?
+		AND STATUS = 'Y'
+	</entry>
+	
+	
+	<!--  -->
+	<entry key="">
+	
+	</entry>
+	
+	
+	<!--  -->
+	<entry key="">
+	
+	</entry>
+</properties>
