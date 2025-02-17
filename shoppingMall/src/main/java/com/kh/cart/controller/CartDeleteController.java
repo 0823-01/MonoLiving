@@ -36,8 +36,6 @@ public class CartDeleteController extends HttpServlet {
         
         response.setContentType("text/plain; charset=UTF-8");
         response.getWriter().print(result);  // 성공 시 1, 실패 시 0 반환
-	
-	
 	}
 
 	/**

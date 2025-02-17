@@ -50,6 +50,21 @@ public class CartService {
 		close(conn);
 		return result;
 	}
+	
+	public int deleteCheckItems(String[] cartNos) {
+	    Connection conn = getConnection();
+	    int result = new CartDao().deleteCheckItems(conn, cartNos);
+
+	    if (result > 0) {
+	        commit(conn);
+	    } else {
+	        rollback(conn);
+	    }
+
+	    close(conn);
+	    return result;
+	}
+
 
 	/**
 	 * 장바구니에 상품 추가 서비스

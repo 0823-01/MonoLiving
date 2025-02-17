@@ -1,6 +1,7 @@
 package com.kh.cart.model.dao;
 
-import static com.kh.common.JDBCTemplate.*;
+import static com.kh.common.JDBCTemplate.close;
+import static com.kh.common.JDBCTemplate.getConnection;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Properties;
 
 import com.kh.cart.model.vo.Cart;
@@ -126,6 +128,31 @@ public class CartDao {
 
 		return result;
 	}
+	
+	public int deleteCheckItems(Connection conn, String[] cartNos) {
+	    int result = 0;
+	    PreparedStatement pstmt = null;
+
+	    String placeholders = String.join(",", Collections.nCopies(cartNos.length, "?")); // "?, ?, ?"
+	    String sql = "DELETE FROM CART WHERE CART_NO IN (" + placeholders + ")";
+
+	    try {
+	        pstmt = conn.prepareStatement(sql);
+	        for (int i = 0; i < cartNos.length; i++) {
+	            pstmt.setInt(i + 1, Integer.parseInt(cartNos[i]));
+	        }
+	        result = pstmt.executeUpdate();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        close(pstmt);
+	    }
+
+	    return result;
+	}
+
+
+
 
 	/**
 	 * 장바구니에 상품 추가
